@@ -6,134 +6,65 @@ using SpaceMage.Catalogs;
 
 namespace SpaceMage
 {
-    public class Player : NetworkBehaviour
+    public class Player : MonoBehaviour
     {
-        public NetworkVariable<Vector3> Position = new NetworkVariable<Vector3>();
-        public NetworkVariable<Quaternion> Rotation = new NetworkVariable<Quaternion>();
-
         [SerializeField] private Rigidbody2D rb;
+        public bool IsRecoveringFromInertia { get { return rb.angularVelocity > 0; } }
 
+        // Specs.
         [SerializeField] private Ship ship;
         public Ship Ship { get { return ship; } }
         public bool IsInShip { get { return ship != null; } }
 
-
         private void Start()
         {
             rb = GetComponent<Rigidbody2D>();
-            ship =  ShipCatalog.GetDefaultShip(transform.position, transform.rotation);
+            SetShipToDefault();
+        }
+
+        private void FixedUpdate()
+        {
+            // Reduce inertia based on modified maneuverability in case of collisions.
+            if (rb.angularVelocity > 0)
+                rb.angularVelocity = Mathf.Clamp(rb.angularVelocity - ship.InertiaRecovery, 0, rb.angularVelocity);
+            else if (rb.angularVelocity < 0)
+                rb.angularVelocity = Mathf.Clamp(rb.angularVelocity + ship.InertiaRecovery, rb.angularVelocity, 0);
+        }
+
+        private void SetShipToDefault()
+        {
+            ship = ShipCatalog.GetDefaultShip(transform.position, transform.rotation);
             ship.transform.parent = transform;
         }
 
-        public override void OnNetworkSpawn()
+        // Determine whether ship is accelerating or decelerating.
+        public void AccelerateShip(Vector2 inputAmount)
         {
-            if (IsOwner)
-                Move();
+            float acceleration = inputAmount.y;
+
+            if (acceleration > 0)
+                accelerateeShip(acceleration);
+            else if (acceleration < 0)
+                decelerateShip(acceleration);
         }
 
-        public void Move()
+        // Perform acceleration or deceleration of ship.
+        public void accelerateeShip(float acceleration)
         {
-            if (NetworkManager.Singleton.IsServer)
-            {
-//                var randomPosition = GetRandomPosition();
-   //             transform.position = randomPosition;
-     //           Position.Value = randomPosition;
-            }
-            else
-            {
-                SubmitPositionRequestServerRpc();
-            }
-        }
-
-        [ServerRpc]
-        void SubmitPositionRequestServerRpc(ServerRpcParams rpcParams = default)
-        {
- //           Position.Value = GetRandomPosition();
-        }
-
-
-
-
-        // Acceleration and deceleration netcode.
-        private Vector2 accelerateAmount = Vector2.zero;
-        [ServerRpc]
-        void SubmitAccelerationRequestServerRpc(ServerRpcParams rpcParams = default)
-        {
-            accelerateShip(accelerateAmount);
-        }
-
-        public void AccelerateShip(Vector2 amount)
-        {
-            if (NetworkManager.Singleton.IsServer)
-            {
-                accelerateShip(amount);
-            }
-            else
-            {
-                accelerateAmount = amount;
-                SubmitAccelerationRequestServerRpc();
-            }
-        }
-
-        private void accelerateShip(Vector2 amount)
-        {
-            float acceleration = amount.y * ship.Engine.BaseAcceleration;
+            acceleration *= ship.Engine.BaseAcceleration;
             rb.AddForce(transform.up * acceleration * Time.fixedDeltaTime);
         }
-
-
-        [ServerRpc]
-        void SubmitDecelerationRequestServerRpc(ServerRpcParams rpcParams = default)
+        public void decelerateShip(float deceleration)
         {
-            decelerateShip(accelerateAmount);
-        }
-
-        public void DecelerateShip(Vector2 amount)
-        {
-            if (NetworkManager.Singleton.IsServer)
-            {
-                decelerateShip(amount);
-            }
-            else
-            {
-                accelerateAmount = amount;
-                SubmitDecelerationRequestServerRpc();
-            }
-        }
-
-        private void decelerateShip(Vector2 amount)
-        {
-            float deceleration = amount.y * ship.Engine.BaseDeceleration;
+            deceleration *= ship.Engine.BaseDeceleration;
             rb.AddForce(transform.up * deceleration * Time.fixedDeltaTime);
         }
 
-        // Turn netcode.
-        private Vector2 turnAmount = Vector2.zero;
-        [ServerRpc]
-        void SubmitTurnRequestServerRpc(ServerRpcParams rpcParams = default)
+        // Perform turning of ship.
+        public void TurnShip(Vector2 inputAmount)
         {
-            turnShip(turnAmount);
-        }
-
-        public void TurnShip(Vector2 amount)
-        {
-            if (NetworkManager.Singleton.IsServer)
-            {
-                turnShip(amount);
-            }
-            else
-            {
-                turnAmount = amount;
-                SubmitTurnRequestServerRpc();
-            }
-
-        }
-
-        private void turnShip(Vector2 amount)
-        {
-            float enginePower = Mathf.Sqrt((ship.Engine.BaseAcceleration + ship.Engine.BaseDeceleration) / 2);
-            
-            float turnAmount = amount.x * ship.BaseManeuverability * enginePower;
+            // Execute player input rotation.
+            float turnAmount = inputAmount.x * ship.Maneuverability;
             rb.MoveRotation(rb.rotation + turnAmount * Time.fixedDeltaTime);
         }
     }

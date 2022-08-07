@@ -12,5 +12,7 @@ namespace SpaceMage
 
         [SerializeField] private float baseDeceleration = 1.0f;
         public float BaseDeceleration { get { return baseDeceleration; } }
+
+        public float Power { get { return Mathf.Sqrt((baseAcceleration + baseDeceleration) / 2);  } }
     }
 }

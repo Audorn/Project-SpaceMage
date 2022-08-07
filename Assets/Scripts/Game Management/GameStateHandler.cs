@@ -10,7 +10,7 @@ namespace SpaceMage
         // Singleton allowing access to the game state handler through the static class.
         private static GameStateHandler _;
         public static GameStateHandler Singleton { get { return _; } }
-        private void Start() { _ = this; }
+        private void Awake() { _ = this; }
 
         // Singleton allowing access to the game state through the static class.
         private static GameState gameState = GameState.Initializing;

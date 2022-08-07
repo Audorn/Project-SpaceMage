@@ -15,43 +15,15 @@ namespace SpaceMage.Controls
         public Player Player { get { return player; } }
         private void Start() { player = GetComponent<Player>(); }
 
-        void Update()
-        {
-            // Move the local player if is server or host.
-/*            if (NetworkManager.Singleton.IsServer && !NetworkManager.Singleton.IsClient)
-            {
-                foreach (ulong uid in NetworkManager.Singleton.ConnectedClientsIds)
-                    NetworkManager.Singleton.SpawnManager.GetPlayerNetworkObject(uid).GetComponent<Player>().Move();
-            }
-
-            // Request move of respective client player. (Not quite right)
-            else
-            {
-                var playerObject = NetworkManager.Singleton.SpawnManager.GetLocalPlayerObject();
-                var player = playerObject.GetComponent<Player>();
-                player.Move();
-            }*/
-        }
-
-        // Track acceleration.
+        // Track acceleration and turning.
         private bool isAccelerationControlHeld = false;
+        private bool isTurnControlHeld = false;
         private Vector2 accelerationAmount = Vector2.zero;
-        public void ModifyAcceleration(InputAction.CallbackContext context)
-        {
+        private Vector2 turnAmount = Vector2.zero;
 
-            if (NetworkManager.Singleton.IsServer && !NetworkManager.Singleton.IsClient)
-            {
-                foreach (ulong uid in NetworkManager.Singleton.ConnectedClientsIds)
-                    NetworkManager.Singleton.SpawnManager.GetPlayerNetworkObject(uid).GetComponent<PlayerController>().UpdateAccelerationData(context);
-            }
-            else
-            {
-                var playerObject = NetworkManager.Singleton.SpawnManager.GetLocalPlayerObject();
-                var playerController = playerObject.GetComponent<PlayerController>();
-                playerController.UpdateAccelerationData(context);
-            }
-        }
-        public void UpdateAccelerationData(InputAction.CallbackContext context)
+        // Because the Input system doesn't have an equivalent to .getkey(''),
+        // the state of the action has to be tracked to handle holding a key down.
+        public void TrackAccelerationInput(InputAction.CallbackContext context)
         {
             Vector2 moveValue = context.ReadValue<Vector2>();
             if (context.phase == InputActionPhase.Started)
@@ -62,24 +34,9 @@ namespace SpaceMage.Controls
             accelerationAmount = moveValue;
         }
 
-        // Track turning.
-        private bool isTurnControlHeld = false;
-        private Vector2 turnAmount = Vector2.zero;
-        public void ModifyTurn(InputAction.CallbackContext context)
-        {
-            if (NetworkManager.Singleton.IsServer && !NetworkManager.Singleton.IsClient)
-            {
-                foreach (ulong uid in NetworkManager.Singleton.ConnectedClientsIds)
-                    NetworkManager.Singleton.SpawnManager.GetPlayerNetworkObject(uid).GetComponent<PlayerController>().UpdateTurnData(context);
-            }
-            else
-            {
-                var playerObject = NetworkManager.Singleton.SpawnManager.GetLocalPlayerObject();
-                var playerController = playerObject.GetComponent<PlayerController>();
-                playerController.UpdateTurnData(context);
-            }
-        }
-        public void UpdateTurnData(InputAction.CallbackContext context)
+        // Because the Input system doesn't have an equivalent to .getkey(''),
+        // the state of the action has to be tracked to handle holding a key down.
+        public void TrackTurnInput(InputAction.CallbackContext context)
         {
             Vector2 moveValue = context.ReadValue<Vector2>();
             if (context.phase == InputActionPhase.Started)
@@ -90,7 +47,7 @@ namespace SpaceMage.Controls
             turnAmount = moveValue * -1;
         }
 
-        // Handle acceleration and turn here because the input system doesn't allow holding keys.
+        // See if the tracked input is reporting acceleration or turning.
         private void FixedUpdate()
         {
             if (player.IsInShip && isAccelerationControlHeld)
@@ -102,13 +59,8 @@ namespace SpaceMage.Controls
             // TODO: allow selection of interactibles outside of ship.
         }
 
-        private void AccelerateShip()
-        {
-            if (accelerationAmount.y > 0)
-                player.AccelerateShip(accelerationAmount);
-            else if (accelerationAmount.y < 0)
-                player.DecelerateShip(accelerationAmount);
-        }
+        // Tell the player to accelerate or turn the ship.
+        private void AccelerateShip() { player.AccelerateShip(accelerationAmount); } /* Could be acceleration or deceleration. */
         private void TurnShip() { player.TurnShip(turnAmount); }
     }
 }

@@ -11,7 +11,7 @@ namespace SpaceMage.Catalogs
     {
         private static ShipCatalog _;
         public static ShipCatalog Singleton { get { return _; } }
-        private void Start() { _ = this; }
+        private void Awake() { _ = this; }
 
         [SerializeField] private List<Ship> ships = new List<Ship>();
         public List<Ship> Ships { get { return ships; } }

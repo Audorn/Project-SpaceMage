@@ -8,7 +8,7 @@ namespace SpaceMage.Catalogs
     {
         private static EngineCatalog _;
         public static EngineCatalog Singleton { get { return _; } }
-        private void Start() { _ = this; }
+        private void Awake() { _ = this; }
 
         [SerializeField] private List<Engine> engines = new List<Engine>();
         public List<Engine> Engines { get { return engines; } }
