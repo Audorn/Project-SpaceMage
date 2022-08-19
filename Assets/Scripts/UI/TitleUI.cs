@@ -17,32 +17,13 @@ namespace SpaceMage.UI
         private void MainMenu()
         {
             // TODO: If a game can be loaded, offer continue instead.
-            if (GUILayout.Button("New Solo Game")) newGame();
-            if (GUILayout.Button("Host Game")) hostGame();
-            if (GUILayout.Button("Join Game")) joinGame();
+            if (GUILayout.Button("New Game")) newGame();
             if (GUILayout.Button("Settings")) viewSettings();
             if (GUILayout.Button("Site")) visitSite();
             if (GUILayout.Button("Quit")) quitGame();
         }
 
-        private void newGame()
-        {
-            Debug.Log("Starting new solo game...");
-        }
-
-        private void hostGame()
-        {
-            // TODO: Create ui to load a game or start a new one.
-            // Character will either be in memory or a new one will need to be picked / created.
-            Debug.Log("Starting game as host...");
-        }
-
-        private void joinGame()
-        {
-            // TODO: Create ui to select game to join.
-            // Character will either be in memory or a new one will need to be picked / created.
-            Debug.Log("Joining game...");
-        }
+        private void newGame() { GameManager.StartNewGame(); }
 
         private void viewSettings()
         {

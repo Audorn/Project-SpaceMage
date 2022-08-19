@@ -24,6 +24,13 @@ namespace SpaceMage
         public UnityEvent ProcessTerminationComplete = new UnityEvent();
         public UnityEvent ShutDown = new UnityEvent();
 
+        private bool isReadyToInitializeGame = false;
+        private bool isReadyToCompleteGameInitialization = false;
+        private bool isReadyToRunGame = false;
+        private bool isReadyToTerminateProcesses = false;
+        private bool isReadyToCompleteTerminationProcess = false;
+        private bool isReadyToShutDown = false;
+
         /// <summary>
         /// Called by game manager to start the game state handler.
         /// </summary>
@@ -38,13 +45,53 @@ namespace SpaceMage
             ShutDown.AddListener(shutDown);
 
             // Start the state machine.
-            InitializeGame.Invoke();
+            isReadyToInitializeGame = true;
+        }
+
+        // No two events should fire on the same frame.
+        private void Update()
+        {
+            if (isReadyToInitializeGame)
+            {
+                isReadyToInitializeGame = false;
+                InitializeGame.Invoke();
+            }
+
+            if (isReadyToCompleteGameInitialization)
+            {
+                isReadyToCompleteGameInitialization = false;
+                GameInitializationComplete.Invoke();
+            }
+
+            if (isReadyToRunGame)
+            {
+                isReadyToRunGame = false;
+                RunGame.Invoke();
+            }
+
+            if (isReadyToTerminateProcesses)
+            {
+                isReadyToTerminateProcesses = false;
+                TerminateProcesses.Invoke();
+            }
+
+            if (isReadyToCompleteTerminationProcess)
+            {
+                isReadyToCompleteTerminationProcess = false;
+                ProcessTerminationComplete.Invoke();
+            }
+
+            if (isReadyToShutDown)
+            {
+                isReadyToShutDown = false;
+                ShutDown.Invoke();
+            }
         }
 
         public void RegisterQuitGameRequest()
         {
             if (gameState == GameState.Running)
-                TerminateProcesses.Invoke();
+                isReadyToTerminateProcesses = true;
         }
 
         // Simple actions to show the events firing in the console and iterate through them.
@@ -52,14 +99,14 @@ namespace SpaceMage
         {
             Debug.Log("Initializing...");
             gameState = GameState.Initialized;
-            GameInitializationComplete.Invoke();
+            isReadyToCompleteGameInitialization = true;
         }
 
         private void gameInitializationComplete()
         {
             Debug.Log("Initialization complete.");
             gameState = GameState.Running;
-            RunGame.Invoke();
+            isReadyToRunGame = true;
         }
 
         private void runGame()
@@ -71,14 +118,14 @@ namespace SpaceMage
         {
             Debug.Log("Terminating processes...");
             gameState = GameState.Terminating_Processes;
-            ProcessTerminationComplete.Invoke();
+            isReadyToCompleteTerminationProcess = true;
         }
 
         private void processTerminationComplete()
         {
             Debug.Log("Process termination complete.");
             gameState = GameState.Processes_Terminated;
-            ShutDown.Invoke();
+            isReadyToShutDown = true;
         }
 
         private void shutDown()

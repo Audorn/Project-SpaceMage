@@ -159,7 +159,7 @@ MonoBehaviour:
   m_LightType: 3
   m_BlendStyleIndex: 1
   m_FalloffIntensity: 0.75
-  m_Color: {r: 0.9987237, g: 1, b: 0.5882353, a: 0.78431374}
+  m_Color: {r: 1, g: 1, b: 0, a: 0.78431374}
   m_Intensity: 0.75
   m_LightVolumeIntensity: 0.5
   m_LightVolumeIntensityEnabled: 1
@@ -239,6 +239,7 @@ GameObject:
   - component: {fileID: 8915404431363497725}
   - component: {fileID: 8915404431363497724}
   - component: {fileID: 8915404431363497727}
+  - component: {fileID: 1630372915}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -486,6 +487,18 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
+--- !u!114 &1630372915
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8915404431363497726}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 44b920af6e605ff47a7152154d4cc7d6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &8915404431363543191
 GameObject:
   m_ObjectHideFlags: 0
@@ -635,9 +648,9 @@ MonoBehaviour:
   m_BlendStyleIndex: 0
   m_FalloffIntensity: 0.5
   m_Color: {r: 1, g: 0, b: 0, a: 1}
-  m_Intensity: 1
+  m_Intensity: 3
   m_LightVolumeIntensity: 1
-  m_LightVolumeIntensityEnabled: 1
+  m_LightVolumeIntensityEnabled: 0
   m_ApplyToSortingLayers: 00000000
   m_LightCookieSprite: {fileID: 0}
   m_DeprecatedPointLightCookieSprite: {fileID: 0}

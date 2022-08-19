@@ -3,18 +3,30 @@ using System.Collections.Generic;
 using UnityEngine;
 using Unity.Netcode;
 
-namespace SpaceMage
+namespace SpaceMage.Entities
 {
     /// <summary>
-    /// All ships in the game.
+    /// A ship controlled by a player pilot. It is capable of taking damage and dying, and can deal damage on contact.
     /// </summary>
     public class Ship : MonoBehaviour
     {
-        // Get the pilot. TODO: Create parent class to get instead.
+        // =================================================
+        // ==================== SORTING ====================
+        // =================================================
+        [SerializeField] private Faction faction;
+        [SerializeField] private ThreatLevel threatLevel;
+        [SerializeField] private Rarity rarity;
+
+        public Faction Faction { get { return faction; } }
+        public ThreatLevel ThreatLevel { get { return threatLevel; } }
+        public Rarity Rarity { get { return rarity; } }
+
+        // =================================================
+        // ==================== CONTROL ====================
+        // =================================================
         [SerializeField] private Player pilot;
         public Player Pilot { get { return pilot; } }
 
-        // Specs.
         [SerializeField] private float baseManeuverability = 1.0f;
         public float BaseManeuverability { get { return baseManeuverability; } }
         public float Maneuverability { get { return baseManeuverability * engine.Power; } }
@@ -31,6 +43,11 @@ namespace SpaceMage
             this.engine = engine;
 
             return oldEngine;
+        }
+
+        protected void Awake()
+        {
+            pilot = GetComponentInParent<Player>();
         }
     }
 }
