@@ -10,28 +10,18 @@ namespace SpaceMage.Entities
     /// </summary>
     public class Ship : MonoBehaviour
     {
-        // =================================================
-        // ==================== SORTING ====================
-        // =================================================
-        [SerializeField] private Faction faction;
-        [SerializeField] private ThreatLevel threatLevel;
-        [SerializeField] private Rarity rarity;
-
-        public Faction Faction { get { return faction; } }
-        public ThreatLevel ThreatLevel { get { return threatLevel; } }
-        public Rarity Rarity { get { return rarity; } }
+        [SerializeField] private FilterData filterData;
+        public FilterData FilterData { get { return filterData; } }
 
         // =================================================
         // ==================== CONTROL ====================
         // =================================================
-        [SerializeField] private Player pilot;
-        public Player Pilot { get { return pilot; } }
-
         [SerializeField] private float baseManeuverability = 1.0f;
+        [SerializeField] private float baseStopSpinningRate = 0.1f;
         public float BaseManeuverability { get { return baseManeuverability; } }
-        public float Maneuverability { get { return baseManeuverability * engine.Power; } }
-        public float InertiaRecovery { get { return Mathf.Sqrt(Mathf.Sqrt(Maneuverability)); } }
-        private bool isRecoveringFromInertia { get { return pilot.IsRecoveringFromInertia; } }
+        public float BaseStopSpinningRate { get { return baseStopSpinningRate; } }
+        public float Maneuverability { get { return (engine) ? baseManeuverability * engine.Power : 0f; } }
+        public float StopSpinningRate { get { return (engine) ? baseStopSpinningRate * engine.Power : 0f; } }
 
         [SerializeField] private Engine engine;
         public Engine Engine { get { return engine; } }
@@ -43,11 +33,6 @@ namespace SpaceMage.Entities
             this.engine = engine;
 
             return oldEngine;
-        }
-
-        protected void Awake()
-        {
-            pilot = GetComponentInParent<Player>();
         }
     }
 }

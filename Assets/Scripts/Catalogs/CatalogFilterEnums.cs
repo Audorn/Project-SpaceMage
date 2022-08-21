@@ -4,9 +4,18 @@ using UnityEngine;
 
 namespace SpaceMage
 {
+    public enum Catalog
+    {
+        ANY,
+        HAZARD,
+        SETPIECE,
+        SHIP,
+        ENGINE
+    }
+
     public enum Faction
     {
-        NONE,
+        ANY,
         HUMAN,
         ALIEN,
         AI,
@@ -15,7 +24,7 @@ namespace SpaceMage
 
     public enum ThreatLevel
     {
-        NONE,
+        ANY,
         VERY_LOW,
         LOW,
         MEDIUM,
@@ -26,7 +35,7 @@ namespace SpaceMage
 
     public enum Rarity
     {
-        NONE,
+        ANY,
         VERY_COMMON,
         COMMON,
         UNCOMMON,

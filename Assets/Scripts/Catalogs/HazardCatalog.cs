@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using SpaceMage.Entities;
+using SpaceMage.LevelGeneration;
 
 namespace SpaceMage.Catalogs
 {
@@ -21,18 +22,32 @@ namespace SpaceMage.Catalogs
         /// Returns a list of hazards selected based on the filters.
         /// They still need to be instantiated.
         /// </summary>
-        /// <param name="sortingData">Faction, ThreatLevel, Rarity, NumberToGet, and IsEachUnique.</param>
+        /// <param name="spawnSettings">Faction, ThreatLevel, Rarity, NumberToGet, and IsEachUnique.</param>
         /// <returns>A list of hazards.</returns>
-        public static List<Hazard> GetHazard(SortingData sortingData)
+        public static List<Hazard> GetHazards(SpawnSettings spawnSettings)
         {
             List<Hazard> validHazards = new List<Hazard>();
-            foreach (Hazard hazard in _.hazards)
+            if (spawnSettings.FilterData.PrefabId != "") // Specific uniqueId.
             {
-                if (hazard.Faction != Faction.NONE && hazard.Faction == sortingData.Faction ||
-                    hazard.ThreatLevel != ThreatLevel.NONE && hazard.ThreatLevel == sortingData.ThreatLevel ||
-                    hazard.Rarity != Rarity.NONE && hazard.Rarity == sortingData.Rarity ||
-                    hazard.Faction == Faction.NONE && hazard.ThreatLevel == ThreatLevel.NONE && hazard.Rarity == Rarity.NONE)
+                foreach (Hazard hazard in _.hazards)
+                {
+                    if (spawnSettings.FilterData.PrefabId == hazard.FilterData.PrefabId)
+                    {
                         validHazards.Add(hazard);
+                        break;
+                    }
+                }
+            }
+            else // Find by tags.
+            {
+                foreach (Hazard hazard in _.hazards)
+                {
+                    if (hazard.FilterData.Faction != Faction.ANY && hazard.FilterData.Faction == spawnSettings.FilterData.Faction ||
+                        hazard.FilterData.ThreatLevel != ThreatLevel.ANY && hazard.FilterData.ThreatLevel == spawnSettings.FilterData.ThreatLevel ||
+                        hazard.FilterData.Rarity != Rarity.ANY && hazard.FilterData.Rarity == spawnSettings.FilterData.Rarity ||
+                        hazard.FilterData.Faction == Faction.ANY && hazard.FilterData.ThreatLevel == ThreatLevel.ANY && hazard.FilterData.Rarity == Rarity.ANY)
+                            validHazards.Add(hazard);
+                }
             }
 
             // If no hazards were found that match the sorting data, only return a default hazard.
@@ -40,16 +55,16 @@ namespace SpaceMage.Catalogs
                 validHazards.Add(_.hazards[0]);
 
             List<Hazard> selectedHazards = new List<Hazard>();
-            for (int i = 0; i < sortingData.NumberToGet; i++)
+            for (int i = 0; i < spawnSettings.NumberToGet; i++)
             {
                 // Early out if there are no valid hazards.
                 if (validHazards.Count == 0)
                     break;
 
-                int index = Random.Range(0, validHazards.Count - 1);
+                int index = Random.Range(0, validHazards.Count);
                 selectedHazards.Add(validHazards[index]);
 
-                if (sortingData.IsEachUnique)
+                if (spawnSettings.IsEachUnique)
                     validHazards.RemoveAt(index);
             }
 

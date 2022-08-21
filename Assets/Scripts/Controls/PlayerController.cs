@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using Unity.Netcode;
+using SpaceMage.Entities;
 
 namespace SpaceMage.Controls
 {
@@ -11,9 +12,9 @@ namespace SpaceMage.Controls
     /// </summary>
     public class PlayerController : MonoBehaviour
     {
-        [SerializeField] private Player player;
-        public Player Player { get { return player; } }
-        private void Start() { player = GetComponent<Player>(); }
+        [SerializeField] private Pilot pilot;
+        public Pilot Pilot { get { return pilot; } }
+        private void Start() { pilot = GetComponent<Pilot>(); }
 
         // Track acceleration and turning.
         private bool isAccelerationControlHeld = false;
@@ -50,17 +51,17 @@ namespace SpaceMage.Controls
         // See if the tracked input is reporting acceleration or turning.
         private void FixedUpdate()
         {
-            if (player.IsInShip && isAccelerationControlHeld)
+            if (pilot.IsInShip && isAccelerationControlHeld)
                 AccelerateShip();
             // TODO: allow movement outside of ship.
 
-            if (player.IsInShip && isTurnControlHeld)
+            if (pilot.IsInShip && isTurnControlHeld)
                 TurnShip();
             // TODO: allow selection of interactibles outside of ship.
         }
 
         // Tell the player to accelerate or turn the ship.
-        private void AccelerateShip() { player.AccelerateShip(accelerationAmount); } /* Could be acceleration or deceleration. */
-        private void TurnShip() { player.TurnShip(turnAmount); }
+        private void AccelerateShip() { pilot.AccelerateShip(accelerationAmount); } /* Could be acceleration or deceleration. */
+        private void TurnShip() { pilot.TurnShip(turnAmount); }
     }
 }

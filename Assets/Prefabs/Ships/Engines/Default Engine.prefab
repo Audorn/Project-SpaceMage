@@ -44,5 +44,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c90d5a8149d8ffe4d910882d887e29f3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  filterData:
+    faction: 1
+    threatLevel: 2
+    rarity: 2
   baseAcceleration: 100
   baseDeceleration: 50

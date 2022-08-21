@@ -16,7 +16,6 @@ GameObject:
   - component: {fileID: 1619362857742308093}
   - component: {fileID: -1135386249544921753}
   - component: {fileID: -5918430909458941169}
-  - component: {fileID: -2403134327049030320}
   - component: {fileID: 2512230541074779728}
   m_Layer: 0
   m_Name: Default Ship
@@ -104,11 +103,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4b91b18c1c615b0428ce88de309dcae9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  faction: 0
-  threatLevel: 0
-  rarity: 0
-  pilot: {fileID: 0}
+  filterData:
+    faction: 1
+    threatLevel: 2
+    rarity: 2
   baseManeuverability: 25
+  baseStopSpinningRate: 0.1
   engine: {fileID: 2208123816146251860, guid: 9606f48144b92e841965d2f6665f4899, type: 3}
 --- !u!60 &-2334013680017722951
 PolygonCollider2D:
@@ -294,19 +294,6 @@ MonoBehaviour:
   rb: {fileID: 0}
   impactBaseDamage: 2
   damageInterval: 60
---- !u!114 &-2403134327049030320
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1481393552804321905}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2ef75847e9fb8594b8c6b2550f20df2f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  gameObjectThatDies: {fileID: 0}
 --- !u!114 &2512230541074779728
 MonoBehaviour:
   m_ObjectHideFlags: 0

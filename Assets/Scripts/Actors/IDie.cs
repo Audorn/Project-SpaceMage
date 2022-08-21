@@ -9,17 +9,6 @@ namespace SpaceMage.Entities
     /// </summary>
     public class IDie : MonoBehaviour
     {
-        [SerializeField] private GameObject gameObjectThatDies;
-        public virtual void Die() { Debug.Log($"Destroying {gameObjectThatDies.name}"); Destroy(gameObjectThatDies); }
-
-        // If there is no pilot, this gameobject will be the one that dies.
-        protected void Start()
-        {
-            IDieTarget dieTarget = GetComponentInParent<IDieTarget>();
-            if (dieTarget)
-                gameObjectThatDies = dieTarget.gameObject;
-            else
-                gameObjectThatDies = gameObject;
-        }
+        public virtual void Die() { Debug.Log($"Destroying {gameObject.name}"); Destroy(gameObject); }
     }
 }

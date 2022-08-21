@@ -3,34 +3,15 @@ using System.Collections.Generic;
 using UnityEngine;
 using Unity.Netcode;
 using SpaceMage.Catalogs;
-using SpaceMage.Entities;
 
-namespace SpaceMage
+namespace SpaceMage.Entities
 {
-    public class Player : MonoBehaviour
+    public class Pilot : Actor
     {
-        [SerializeField] private Rigidbody2D rb;
-        public bool IsRecoveringFromInertia { get { return rb.angularVelocity > 0; } }
-
-        // Specs.
+        [SerializeField] private TorqueRemover iStopSpinning;
         [SerializeField] private Ship ship;
         public Ship Ship { get { return ship; } }
         public bool IsInShip { get { return ship != null; } }
-
-        private void Start()
-        {
-            rb = GetComponent<Rigidbody2D>();
-            SetShipToDefault();
-        }
-
-        private void FixedUpdate()
-        {
-            // Reduce inertia based on modified maneuverability in case of collisions.
-            if (rb.angularVelocity > 0)
-                rb.angularVelocity = Mathf.Clamp(rb.angularVelocity - ship.InertiaRecovery, 0, rb.angularVelocity);
-            else if (rb.angularVelocity < 0)
-                rb.angularVelocity = Mathf.Clamp(rb.angularVelocity + ship.InertiaRecovery, rb.angularVelocity, 0);
-        }
 
         private void SetShipToDefault()
         {
@@ -67,6 +48,15 @@ namespace SpaceMage
             // Execute player input rotation.
             float turnAmount = inputAmount.x * ship.Maneuverability;
             rb.MoveRotation(rb.rotation + turnAmount * Time.fixedDeltaTime);
+        }
+
+        protected override void Start()
+        {
+            base.Start();
+            SetShipToDefault();
+            iStopSpinning = GetComponent<TorqueRemover>();
+            if (iStopSpinning && ship)
+                iStopSpinning.setRate(ship.StopSpinningRate);
         }
     }
 }

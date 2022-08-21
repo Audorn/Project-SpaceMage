@@ -38,10 +38,7 @@ namespace SpaceMage.Entities
                 iDie.Die();
         }
 
-        protected void Awake() 
-        {
-            health = GetComponent<Health>();
-            iDie = GetComponent<IDie>(); 
-        }
+        private void Awake() { health = GetComponent<Health>(); }
+        private void Start() { iDie = GetComponentInParent<IDie>(); }
     }
 }

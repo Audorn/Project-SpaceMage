@@ -2,10 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace SpaceMage.Entities
+namespace SpaceMage.LevelGeneration
 {
-    [RequireComponent(typeof(IDealImpactDamage))]
-    public class Hazard : MonoBehaviour
+    public class Setpiece : MonoBehaviour
     {
         [SerializeField] private FilterData filterData;
         public FilterData FilterData { get { return filterData; } }
