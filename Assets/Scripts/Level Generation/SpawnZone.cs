@@ -7,6 +7,7 @@ using SpaceMage.Entities;
 
 namespace SpaceMage.LevelGeneration
 {
+    [RequireComponent(typeof(Collider2D))]
     public class SpawnZone : MonoBehaviour
     {
         private static int nextId = 0;
@@ -29,6 +30,8 @@ namespace SpaceMage.LevelGeneration
                 if (spawnSettings[i].UniqueId == "")
                     spawnSettings[i].SetUniqueId(SpawnSettings.GenerateUniqueId().ToString());
             }
+
+            trackedColliders = GetComponent<ColliderContainer>();
         }
 
         // ==================================================
@@ -42,7 +45,6 @@ namespace SpaceMage.LevelGeneration
         [SerializeField] private float velocityModifier;
         [SerializeField] private float rotationModifier;
         [SerializeField] private List<SpawnSettings> spawnSettings;
-
         public Vector2 Area { get { return area; } }
 
         public void Toggle(bool state) { isActive = state; }
@@ -87,6 +89,7 @@ namespace SpaceMage.LevelGeneration
             }
         }
 
+        private ColliderContainer trackedColliders;
         private IEnumerator spawnHazards(float spawnDelay, SpawnSettings spawnSettings)
         {
             List<Hazard> hazards = HazardCatalog.GetHazards(spawnSettings);
@@ -94,23 +97,63 @@ namespace SpaceMage.LevelGeneration
             spawnSettings.ToggleSpawning(true);
             foreach (Hazard hazard in hazards)
             {
-                // TODO: Respect sprite width and height within spawn zone if possible.
-                // TODO: Make sure that hazards do not spawn in overlapping other objects.
-                float x = Random.Range(transform.position.x, maxX);
-                float y = Random.Range(transform.position.y, maxY);
+                // Respect sprite width and height within spawn zone if possible.
+                SpriteRenderer spriteRenderer = hazard.GetComponent<SpriteRenderer>();
+                Vector2 overlapDimensions = new Vector2(spriteRenderer.bounds.size.x / 2, spriteRenderer.bounds.size.y / 2);
+                float x = Random.Range(transform.position.x + overlapDimensions.x, maxX - overlapDimensions.x);
+                float y = Random.Range(transform.position.y + overlapDimensions.y, maxY - overlapDimensions.y);
                 Vector2 position = new Vector2(x, y);
+                Vector2 center = new Vector2(x + overlapDimensions.x, y + overlapDimensions.y);
 
-                Hazard h = Instantiate(hazard, position, Quaternion.identity);
-                if (overridePrefabSpawnMotion)
+                if (trackedColliders.Colliders.Count == 0)
                 {
-                    SpawnWithMotion spawnWithMotion = h.GetComponent<SpawnWithMotion>();
-
-                    if (spawnWithMotion)
+                    Hazard h = Instantiate(hazard, position, Quaternion.identity);
+                    if (overridePrefabSpawnMotion)
                     {
-                        spawnWithMotion.SetMinDirection(minDirection);
-                        spawnWithMotion.SetMaxDirection(maxDirection);
-                        spawnWithMotion.ModifyVelocity(velocityModifier);
-                        spawnWithMotion.ModifyRotation(rotationModifier);
+                        SpawnWithMotion spawnWithMotion = h.GetComponent<SpawnWithMotion>();
+
+                        if (spawnWithMotion)
+                        {
+                            spawnWithMotion.SetMinDirection(minDirection);
+                            spawnWithMotion.SetMaxDirection(maxDirection);
+                            spawnWithMotion.ModifyVelocity(velocityModifier);
+                            spawnWithMotion.ModifyRotation(rotationModifier);
+                        }
+                    }
+                }
+
+                else
+                {
+                    // Make sure that hazards do not spawn in overlapping other objects.
+                    foreach (Collider2D collider in trackedColliders.Colliders)
+                    {
+                        SpriteRenderer trackedSpriteRenderer = collider.GetComponent<SpriteRenderer>();
+
+                        Vector2 trackedDimensions = new Vector2(trackedSpriteRenderer.bounds.size.x / 2, trackedSpriteRenderer.bounds.size.y / 2);
+                        Vector2 trackedPosition = collider.transform.position;
+                        Vector2 trackedCenter = new Vector2(trackedPosition.x + trackedDimensions.x, trackedPosition.y + trackedDimensions.y);
+
+                        Vector2 distance = new Vector2(Mathf.Abs(center.x - trackedCenter.x), Mathf.Abs(center.y - trackedCenter.y));
+                        Vector2 requiredDistance = new Vector2(overlapDimensions.x + trackedDimensions.x, overlapDimensions.y + trackedDimensions.y);
+
+                        if (distance.x >= requiredDistance.x || distance.y >= requiredDistance.y)
+                        {
+                            Hazard h = Instantiate(hazard, position, Quaternion.identity);
+                            if (overridePrefabSpawnMotion)
+                            {
+                                SpawnWithMotion spawnWithMotion = h.GetComponent<SpawnWithMotion>();
+
+                                if (spawnWithMotion)
+                                {
+                                    spawnWithMotion.SetMinDirection(minDirection);
+                                    spawnWithMotion.SetMaxDirection(maxDirection);
+                                    spawnWithMotion.ModifyVelocity(velocityModifier);
+                                    spawnWithMotion.ModifyRotation(rotationModifier);
+                                }
+                            }
+
+                            break;
+                        }
                     }
                 }
 
