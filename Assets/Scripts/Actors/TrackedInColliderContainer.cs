@@ -11,6 +11,9 @@ namespace SpaceMage.Entities
         private void OnTriggerEnter2D(Collider2D collision)
         {
             ColliderContainer container = collision.gameObject.GetComponent<ColliderContainer>();
+            if (container == null)
+                return;
+
             container.Add(GetComponent<Collider2D>());
             trackedByContainers.Add(container);
         }
@@ -18,6 +21,9 @@ namespace SpaceMage.Entities
         private void OnTriggerExit2D(Collider2D collision)
         {
             ColliderContainer container = collision.gameObject.GetComponent<ColliderContainer>();
+            if (container == null)
+                return;
+
             container.Remove(GetComponent<Collider2D>());
             trackedByContainers.Remove(container);
         }

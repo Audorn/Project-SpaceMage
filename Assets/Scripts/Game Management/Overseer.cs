@@ -12,5 +12,16 @@ namespace SpaceMage
     {
         public static Vector2 GetRandomDirection(Vector2 min, Vector2 max) { return new Vector2(Random.Range(min.x, max.x), Random.Range(min.y, max.y)); }
         public static float GetRandomRotation(float min, float max) { return Random.Range(min, max); }
+
+        public static RaycastHit2D RaycastWithSelfMask(GameObject gameObject, Vector2 direction)
+        {
+            int oldLayer = gameObject.layer;
+            gameObject.layer = LayerMask.NameToLayer("Ignore Raycast");
+            int layerToIgnore = 1 << gameObject.layer;
+            RaycastHit2D hit = Physics2D.Raycast(gameObject.transform.position, direction, layerToIgnore);
+            gameObject.layer = oldLayer;
+
+            return hit;
+        }
     }
 }

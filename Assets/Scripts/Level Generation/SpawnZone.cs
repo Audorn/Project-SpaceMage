@@ -39,6 +39,7 @@ namespace SpaceMage.LevelGeneration
         // ==================================================
         [SerializeField] private bool isActive = false;
         [SerializeField] private Vector2 area;
+        [SerializeField] private int maxTries = 5;
         [SerializeField] private bool overridePrefabSpawnMotion;
         [SerializeField] private Vector2 maxDirection;
         [SerializeField] private Vector2 minDirection;
@@ -99,14 +100,50 @@ namespace SpaceMage.LevelGeneration
             {
                 // Respect sprite width and height within spawn zone if possible.
                 SpriteRenderer spriteRenderer = hazard.GetComponent<SpriteRenderer>();
-                Vector2 overlapDimensions = new Vector2(spriteRenderer.bounds.size.x / 2, spriteRenderer.bounds.size.y / 2);
-                float x = Random.Range(transform.position.x + overlapDimensions.x, maxX - overlapDimensions.x);
-                float y = Random.Range(transform.position.y + overlapDimensions.y, maxY - overlapDimensions.y);
-                Vector2 position = new Vector2(x, y);
-                Vector2 center = new Vector2(x + overlapDimensions.x, y + overlapDimensions.y);
+                Vector2 spriteDimensionsHalved = new Vector2(spriteRenderer.bounds.size.x / 2, spriteRenderer.bounds.size.y / 2);
 
-                if (trackedColliders.Colliders.Count == 0)
+                // Try to find a place for the hazard to instantiate without overlapping other objects.
+                Vector2 position = Vector2.zero;
+                for (int i = 0; i < maxTries; i++)
                 {
+                    float x = Random.Range(transform.position.x + spriteDimensionsHalved.x, maxX - spriteDimensionsHalved.x);
+                    float y = Random.Range(transform.position.y + spriteDimensionsHalved.y, maxY - spriteDimensionsHalved.y);
+                    Vector2 possiblePosition = new Vector2(x, y);
+
+                    if (trackedColliders.Colliders.Count == 0)
+                    {
+                        position = possiblePosition;
+                        break;
+                    }
+
+                    // Other objects are present. Find the center of this one and then see if it overlaps any of them.
+                    Vector2 center = new Vector2(x + spriteDimensionsHalved.x, y + spriteDimensionsHalved.y);
+
+                    // Make sure that hazards do not spawn in overlapping other objects.
+                    bool isValidPosition = true;
+                    foreach (Collider2D collider in trackedColliders.Colliders)
+                    {
+                        SpriteRenderer trackedSpriteRenderer = collider.GetComponent<SpriteRenderer>();
+
+                        Vector2 trackedDimensionsHalved = new Vector2(trackedSpriteRenderer.bounds.size.x / 2, trackedSpriteRenderer.bounds.size.y / 2);
+                        Vector2 trackedPosition = collider.transform.position;
+                        Vector2 trackedCenter = new Vector2(trackedPosition.x + trackedDimensionsHalved.x, trackedPosition.y + trackedDimensionsHalved.y);
+
+                        Vector2 distance = new Vector2(Mathf.Abs(center.x - trackedCenter.x), Mathf.Abs(center.y - trackedCenter.y));
+                        Vector2 requiredDistance = new Vector2(spriteDimensionsHalved.x + trackedDimensionsHalved.x, spriteDimensionsHalved.y + trackedDimensionsHalved.y);
+
+                        if (distance.x < requiredDistance.x || distance.y < requiredDistance.y)
+                            isValidPosition = false;
+                    }
+
+                    if (isValidPosition)
+                        position = possiblePosition;
+                }
+
+                // A valid position was found, create the new object.
+                if (position != Vector2.zero)
+                {
+                    // TODO: Allow to override starting rotation (not torque, but how the object is rotated when instantiated).
                     Hazard h = Instantiate(hazard, position, Quaternion.identity);
                     if (overridePrefabSpawnMotion)
                     {
@@ -118,41 +155,6 @@ namespace SpaceMage.LevelGeneration
                             spawnWithMotion.SetMaxDirection(maxDirection);
                             spawnWithMotion.ModifyVelocity(velocityModifier);
                             spawnWithMotion.ModifyRotation(rotationModifier);
-                        }
-                    }
-                }
-
-                else
-                {
-                    // Make sure that hazards do not spawn in overlapping other objects.
-                    foreach (Collider2D collider in trackedColliders.Colliders)
-                    {
-                        SpriteRenderer trackedSpriteRenderer = collider.GetComponent<SpriteRenderer>();
-
-                        Vector2 trackedDimensions = new Vector2(trackedSpriteRenderer.bounds.size.x / 2, trackedSpriteRenderer.bounds.size.y / 2);
-                        Vector2 trackedPosition = collider.transform.position;
-                        Vector2 trackedCenter = new Vector2(trackedPosition.x + trackedDimensions.x, trackedPosition.y + trackedDimensions.y);
-
-                        Vector2 distance = new Vector2(Mathf.Abs(center.x - trackedCenter.x), Mathf.Abs(center.y - trackedCenter.y));
-                        Vector2 requiredDistance = new Vector2(overlapDimensions.x + trackedDimensions.x, overlapDimensions.y + trackedDimensions.y);
-
-                        if (distance.x >= requiredDistance.x || distance.y >= requiredDistance.y)
-                        {
-                            Hazard h = Instantiate(hazard, position, Quaternion.identity);
-                            if (overridePrefabSpawnMotion)
-                            {
-                                SpawnWithMotion spawnWithMotion = h.GetComponent<SpawnWithMotion>();
-
-                                if (spawnWithMotion)
-                                {
-                                    spawnWithMotion.SetMinDirection(minDirection);
-                                    spawnWithMotion.SetMaxDirection(maxDirection);
-                                    spawnWithMotion.ModifyVelocity(velocityModifier);
-                                    spawnWithMotion.ModifyRotation(rotationModifier);
-                                }
-                            }
-
-                            break;
                         }
                     }
                 }
