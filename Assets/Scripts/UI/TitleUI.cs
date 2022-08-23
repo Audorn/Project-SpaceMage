@@ -23,7 +23,11 @@ namespace SpaceMage.UI
             if (GUILayout.Button("Quit")) quitGame();
         }
 
-        private void newGame() { GameManager.StartNewGame(); }
+        private void newGame() 
+        { 
+            GameManager.StartNewGame();
+            Close();
+        }
 
         private void viewSettings()
         {
@@ -39,6 +43,17 @@ namespace SpaceMage.UI
         {
             Debug.Log("Quitting...");
             GameStateHandler.Singleton.RegisterQuitGameRequest();
+        }
+
+        public void Open()
+        {
+            // TODO: Make menus behave in a more interesting way.
+            enabled = true;
+        }
+        public void Close()
+        {
+            // TODO: Make menus behave in a more interesting way.
+            enabled = false;
         }
     }
 }

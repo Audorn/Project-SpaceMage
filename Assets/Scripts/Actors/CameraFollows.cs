@@ -30,5 +30,10 @@ namespace SpaceMage.Entities
             position.z = -1;
             camera.transform.position = position;
         }
+
+        private void Start()
+        {
+            camera = GameObject.Find("Main Camera").GetComponent<Camera>();
+        }
     }
 }

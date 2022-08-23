@@ -4,11 +4,11 @@ using UnityEngine;
 
 namespace SpaceMage.LevelGeneration
 {
-    public class LevelController : MonoBehaviour
+    public class LevelManager : MonoBehaviour
     {
         // Singleton allowing access to the game state handler through the static class.
-        private static LevelController _;
-        public static LevelController Singleton { get { return _; } }
+        private static LevelManager _;
+        public static LevelManager Singleton { get { return _; } }
         private void Awake() 
         { 
             _ = this;
@@ -19,8 +19,10 @@ namespace SpaceMage.LevelGeneration
         // ==================== SETTINGS ====================
         // ==================================================
         [SerializeField] private Rect levelSize;
+        [SerializeField] private Vector2 playerSpawnPoint;
         [SerializeField] private List<SpawnZone> spawnZones;
         public Rect LevelSize { get { return levelSize; } }
+        public Vector2 PlayerSpawnPoint { get { return playerSpawnPoint; } }
         public List<SpawnZone> SpawnZones { get { return spawnZones; } }
 
         // ====================================================
@@ -83,5 +85,7 @@ namespace SpaceMage.LevelGeneration
                     _.spawnZones[i].SetAllSpawnSettingsSpawnDelayMultipliers(amount);
             }
         }
+
+        private void OnDestroy() { spawnZones = new List<SpawnZone>(); }
     }
 }

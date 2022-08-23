@@ -16,9 +16,13 @@ namespace SpaceMage
     public enum Faction
     {
         ANY,
-        HUMAN,
-        ALIEN,
-        AI,
+        TRANCERS,
+        CREATURES,
+        LOST,
+        MEME,
+        REVENANT,
+        ELDRITCH,
+        ETHEREALS,
         NEUTRAL
     }
 

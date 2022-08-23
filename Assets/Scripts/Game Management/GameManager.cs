@@ -1,9 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Unity.Netcode;
+using UnityEngine.SceneManagement;
 using SpaceMage.Catalogs;
-using SpaceMage.Entities;
+using SpaceMage.Data;
 using SpaceMage.LevelGeneration;
 
 namespace SpaceMage
@@ -20,9 +20,9 @@ namespace SpaceMage
         { 
             _ = this;
             catalogs = GetComponentInChildren<SetpieceCatalog>().gameObject;
-        }
 
-        [SerializeField] private GameObject playerPrefab;
+            DontDestroyOnLoad(gameObject);
+        }
 
         [SerializeField] private GameObject catalogs;
         public static GameObject Catalogs { get { return _.catalogs; } }
@@ -37,21 +37,9 @@ namespace SpaceMage
         {
             Debug.Log("Starting new game...");
 
-            LevelController.ToggleSpawnZones(true);
-            //SpawnSettings spawnSettings = new SpawnSettings(Faction.NEUTRAL, ThreatLevel.VERY_LOW, Rarity.COMMON, 5);
-            //List<Hazard> hazards = HazardCatalog.GetHazards(spawnSettings);
-
-            //foreach(Hazard hazard in hazards)
-            //{
-            //    Vector2 position = new Vector2(Random.Range(-3f, 3f), Random.Range(-3f, 3f));
-            //    Quaternion rotation = Random.rotation;
-            //    rotation.x = rotation.y = 0;
-
-            //    Hazard h = Instantiate(hazard, position, rotation);
-            //    Vector2 direction = new Vector2(Random.Range(-1000, 1000), Random.Range(-1000, 1000));
-            //    float force = Random.Range(-1, 1);
-            //    h.GetComponent<Rigidbody2D>().AddForce(direction * force);
-            //}
+            MissionGenerationData missiongGenerationData = MissionManager.GetSelectedMissionGenerationData();
+            if (missiongGenerationData.MissionType == MissionType.SURVIVAL)
+                SceneManager.LoadScene("Survival");
         }
     }
 }

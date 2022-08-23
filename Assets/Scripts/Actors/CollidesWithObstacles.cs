@@ -83,11 +83,13 @@ namespace SpaceMage.Entities
                     rb.velocity = new Vector2(-Mathf.Abs(velocityLastFrame.y * -1), velocityLastFrame.x);
                     //rb.rotation = (obstacleFaceImpacted == Direction.NORTH) ? rb.rotation - 90f : rb.rotation + 90f;
                 }
+
+                //  Rotate to match velocity when warping.
+                rb.rotation = (Mathf.Atan2(rb.velocity.y, rb.velocity.x) * Mathf.Rad2Deg) - 90; // -90 because of sprite pointing up instead of right.
             }
 
-            // Get rid of any unwanted spinning and rotate to match velocity.
+            // Get rid of any unwanted spinning.
             rb.angularVelocity = angularVelocityLastFrame;
-            rb.rotation = (Mathf.Atan2(rb.velocity.y, rb.velocity.x) * Mathf.Rad2Deg) - 90; // -90 because of sprite pointing up instead of right.
         }
 
         private Vector2 getDistanceToWarpAcrossObstacle(Obstacle obstacle)
