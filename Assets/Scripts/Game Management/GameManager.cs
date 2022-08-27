@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using SpaceMage.Catalogs;
 using SpaceMage.Data;
-using SpaceMage.LevelGeneration;
+using SpaceMage.Missions;
 
 namespace SpaceMage
 {
@@ -37,9 +37,12 @@ namespace SpaceMage
         {
             Debug.Log("Starting new game...");
 
-            MissionGenerationData missiongGenerationData = MissionManager.GetSelectedMissionGenerationData();
-            if (missiongGenerationData.MissionType == MissionType.SURVIVAL)
+            MissionPossibleContent missionPossibleContent = MissionManager.GetSelectedMissionPossibleContent();
+            if (missionPossibleContent.MissionType == MissionType.SURVIVAL)
+            {
+                MissionManager.PrepareToGenerateMission();
                 SceneManager.LoadScene("Survival");
+            }
         }
     }
 }

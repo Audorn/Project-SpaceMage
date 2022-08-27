@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using SpaceMage.Catalogs;
 
-namespace SpaceMage.LevelGeneration
+namespace SpaceMage.Missions
 {
     [System.Serializable]
     public class SpawnSettings

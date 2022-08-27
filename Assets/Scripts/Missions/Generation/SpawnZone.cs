@@ -5,7 +5,7 @@ using UnityEditor;
 using SpaceMage.Catalogs;
 using SpaceMage.Entities;
 
-namespace SpaceMage.LevelGeneration
+namespace SpaceMage.Missions
 {
     [RequireComponent(typeof(Collider2D))]
     public class SpawnZone : MonoBehaviour

@@ -3,18 +3,17 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
-namespace SpaceMage.LevelGeneration
+namespace SpaceMage.Missions
 {
-    public class LevelGeneratorStateHandler : MonoBehaviour
+    public class MissionContentGeneratorStateHandler : MonoBehaviour
     {
-        // Singleton allowing access to the level generator state handler through the static class.
-        private static LevelGeneratorStateHandler _;
-        public static LevelGeneratorStateHandler Singleton { get { return _; } }
+        // Singleton.
+        private static MissionContentGeneratorStateHandler _;
+        public static MissionContentGeneratorStateHandler Singleton { get { return _; } }
         private void Awake() { _ = this; }
 
-        // Singleton allowing access to the level generator state through the static class.
-        private static LevelGeneratorState state = LevelGeneratorState.WAITING;
-        public static LevelGeneratorState State { get { return state; } }
+        private static MissionContentGeneratorState state = MissionContentGeneratorState.WAITING;
+        public static MissionContentGeneratorState State { get { return state; } }
 
         public UnityEvent Initializing = new UnityEvent();
         public UnityEvent InitializingComplete = new UnityEvent();
@@ -54,9 +53,9 @@ namespace SpaceMage.LevelGeneration
 
         public static void Initialize() { _.doInitializing = true; }
 
-        private static HashSet<LevelGenerator> activeLevelGenerators = new HashSet<LevelGenerator>();
-        public static void RegisterActiveGenerator(LevelGenerator contentPicker) { activeLevelGenerators.Add(contentPicker); }
-        public static void DeRegisterActiveGenerator(LevelGenerator contentPicker) { activeLevelGenerators.Remove(contentPicker); }
+        private static HashSet<MissionContentGenerator> activeLevelGenerators = new HashSet<MissionContentGenerator>();
+        public static void RegisterActiveGenerator(MissionContentGenerator contentPicker) { activeLevelGenerators.Add(contentPicker); }
+        public static void DeRegisterActiveGenerator(MissionContentGenerator contentPicker) { activeLevelGenerators.Remove(contentPicker); }
 
         /// <summary>
         /// Called by LevelManager to start the level generator state handler.
@@ -109,7 +108,7 @@ namespace SpaceMage.LevelGeneration
         private void initializing()
         {
             Debug.Log("Initializing level generator...");
-            state = LevelGeneratorState.INITIALIZING;
+            state = MissionContentGeneratorState.INITIALIZING;
             doInitializing = false;
             doInitializingComplete = true;
         }
@@ -117,7 +116,7 @@ namespace SpaceMage.LevelGeneration
         private void initializingComplete()
         {
             Debug.Log("Level generator initialization complete.");
-            state = LevelGeneratorState.INITIALIZING_COMPLETE;
+            state = MissionContentGeneratorState.INITIALIZING_COMPLETE;
             doInitializingComplete = false;
             doSettingBounds = true;
         }
@@ -125,7 +124,7 @@ namespace SpaceMage.LevelGeneration
         private void settingBounds()
         {
             Debug.Log("Setting level bounds...");
-            state = LevelGeneratorState.SETTING_BOUNDS;
+            state = MissionContentGeneratorState.SETTING_BOUNDS;
             doSettingBounds = false;
             doSettingBoundsComplete = true;
         }
@@ -133,7 +132,7 @@ namespace SpaceMage.LevelGeneration
         private void settingBoundsComplete()
         {
             Debug.Log("Finished setting level bounds.");
-            state = LevelGeneratorState.SETTING_BOUNDS_COMPLETE;
+            state = MissionContentGeneratorState.SETTING_BOUNDS_COMPLETE;
             doSettingBoundsComplete = false;
             doPlacingObjectives = true;
         }
@@ -141,7 +140,7 @@ namespace SpaceMage.LevelGeneration
         private void placingObjectives()
         {
             Debug.Log("Placing objectives...");
-            state = LevelGeneratorState.PLACING_OBJECTIVES;
+            state = MissionContentGeneratorState.PLACING_OBJECTIVES;
             doPlacingObjectives = false;
             doPlacingObjectivesComplete = true;
         }
@@ -149,7 +148,7 @@ namespace SpaceMage.LevelGeneration
         private void placingObjectivesComplete()
         {
             Debug.Log("Objectives placed.");
-            state = LevelGeneratorState.PLACING_OBJECTIVES_COMPLETE;
+            state = MissionContentGeneratorState.PLACING_OBJECTIVES_COMPLETE;
             doPlacingObjectivesComplete = false;
             doPlacingSetpieces = true;
         }
@@ -157,7 +156,7 @@ namespace SpaceMage.LevelGeneration
         private void placingSetpieces()
         {
             Debug.Log("Placing setpieces...");
-            state = LevelGeneratorState.PLACING_SETPIECES;
+            state = MissionContentGeneratorState.PLACING_SETPIECES;
             doPlacingSetpieces = false;
             doPlacingSetpiecesComplete = true;
         }
@@ -165,7 +164,7 @@ namespace SpaceMage.LevelGeneration
         private void placingSetpiecesComplete()
         {
             Debug.Log("Setpieces placed.");
-            state = LevelGeneratorState.PLACING_SETPIECES_COMPLETE;
+            state = MissionContentGeneratorState.PLACING_SETPIECES_COMPLETE;
             doPlacingSetpiecesComplete = false;
             doPlacingObstacles = true;
         }
@@ -173,7 +172,7 @@ namespace SpaceMage.LevelGeneration
         private void placingObstacles()
         {
             Debug.Log("Placing obstacles...");
-            state = LevelGeneratorState.PLACING_OBSTACLES;
+            state = MissionContentGeneratorState.PLACING_OBSTACLES;
             doPlacingObstacles = false;
             doPlacingObstaclesComplete = true;
         }
@@ -181,7 +180,7 @@ namespace SpaceMage.LevelGeneration
         private void placingObstaclesComplete()
         {
             Debug.Log("Obstacles placed.");
-            state = LevelGeneratorState.PLACING_OBSTACLES_COMPLETE;
+            state = MissionContentGeneratorState.PLACING_OBSTACLES_COMPLETE;
             doPlacingObstaclesComplete = false;
             doPlacingSpawnZones = true;
         }
@@ -189,61 +188,58 @@ namespace SpaceMage.LevelGeneration
         private void placingSpawnZones()
         {
             Debug.Log("Placing spawn zones...");
-            state = LevelGeneratorState.PLACING_SPAWN_ZONES;
+            state = MissionContentGeneratorState.PLACING_SPAWN_ZONES;
             doPlacingSpawnZones = false;
             doPlacingSpawnZonesComplete = true;
         }
         private void placingSpawnZonesComplete()
         {
             Debug.Log("Spawn zones placed.");
-            state = LevelGeneratorState.PLACING_SPAWN_ZONES_COMPLETE;
+            state = MissionContentGeneratorState.PLACING_SPAWN_ZONES_COMPLETE;
             doPlacingSpawnZonesComplete = false;
             doPlacingExistingHazards = true;
         }
         private void placingExistingHazards()
         {
             Debug.Log("Placing existing hazards...");
-            state = LevelGeneratorState.PLACING_EXISTING_HAZARDS;
+            state = MissionContentGeneratorState.PLACING_EXISTING_HAZARDS;
             doPlacingExistingHazards = false;
             doPlacingExistingHazardsComplete = true;
         }
         private void placingExistingHazardsComplete()
         {
             Debug.Log("Existing hazards placed.");
-            state = LevelGeneratorState.PLACING_EXISTING_HAZARDS_COMPLETE;
+            state = MissionContentGeneratorState.PLACING_EXISTING_HAZARDS_COMPLETE;
             doPlacingExistingHazardsComplete = false;
             doPlacingExistingEnemies = true;
         }
         private void placingExistingEnemies()
         {
             Debug.Log("Placing existing enemies...");
-            state = LevelGeneratorState.PLACING_EXISTING_ENEMIES;
+            state = MissionContentGeneratorState.PLACING_EXISTING_ENEMIES;
             doPlacingExistingEnemies = false;
             doPlacingExistingEnemiesComplete = true;
         }
         private void placingExistingEnemiesComplete()
         {
             Debug.Log("Existing enemies placed.");
-            state = LevelGeneratorState.PLACING_EXISTING_ENEMIES_COMPLETE;
+            state = MissionContentGeneratorState.PLACING_EXISTING_ENEMIES_COMPLETE;
             doPlacingExistingEnemiesComplete = false;
             doFinished = true;
         }
         private void finished()
         {
             Debug.Log("Level generator finished.");
-            state = LevelGeneratorState.FINISHED;
+            state = MissionContentGeneratorState.FINISHED;
             doFinished = false;
-            LevelStateHandler.RegisterGeneratingLevelComplete();
+            MissionGeneratorStateHandler.RegisterGeneratingLevelComplete();
         }
-
-        // Only one level data generator state handler can exist at a time. Clean up after yourself.
-        private void OnDestroy() { _ = null; }
     }
 
     /// <summary>
     /// The state of a given level.
     /// </summary>
-    public enum LevelGeneratorState
+    public enum MissionContentGeneratorState
     {
         WAITING,
         INITIALIZING,

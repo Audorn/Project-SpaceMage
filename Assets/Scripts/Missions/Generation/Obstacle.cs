@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using SpaceMage.Entities;
 
-namespace SpaceMage.LevelGeneration
+namespace SpaceMage.Missions
 {
     public class Obstacle : MonoBehaviour
     {
