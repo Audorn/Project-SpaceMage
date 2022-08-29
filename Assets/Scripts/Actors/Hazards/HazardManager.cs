@@ -12,29 +12,47 @@ namespace SpaceMage.Entities
         private void Awake() { _ = this; }
 
 
-        [SerializeField] private int maxHazards;
-        [SerializeField] private List<Hazard> existingHazards;
+        [SerializeField] private int maxPrimaryHazards;
+        [SerializeField] private List<Hazard> existingPrimaryHazards;       // Spawned from SpawnZones.
+        [SerializeField] private List<Hazard> existingSecondaryHazards;  // Spawned from main Hazards.
+        [SerializeField] private List<Hazard> existingTertiaryHazards;   // Spawned from secondary Hazards.
+        [SerializeField] private List<Hazard> existingQuaternaryHazards; // Spawned from tertiary Hazards.
 
-        public static int MaxHazards { get { return _.maxHazards; } }
-        public static Hazard InstantiateHazard(Hazard hazard, Vector3 position, Quaternion quaternion)
+        public static int MaxHazards { get { return _.maxPrimaryHazards; } }
+        public static Hazard InstantiateHazard(Hazard hazard, Vector3 position, Quaternion quaternion, Order order = Order.PRIMARY)
         {
-            int numberOfHazards = _.existingHazards.Count;
+            int numberOfHazards = (order == Order.PRIMARY) ? _.existingPrimaryHazards.Count :
+                                  (order == Order.SECONDARY) ? _.existingSecondaryHazards.Count :
+                                  (order == Order.TERTIARY) ? _.existingTertiaryHazards.Count :
+                                  (order == Order.QUATERNARY) ? _.existingQuaternaryHazards.Count : 0;
+
             for (int i = 0; i < numberOfHazards; i++)
             {
-                Hazard existingHazard = _.existingHazards[i];
+                Hazard existingHazard = (order == Order.PRIMARY) ? _.existingPrimaryHazards[i] :
+                                        (order == Order.SECONDARY) ? _.existingSecondaryHazards[i] :
+                                        (order == Order.TERTIARY) ? _.existingTertiaryHazards[i] :
+                                        (order == Order.QUATERNARY) ? _.existingQuaternaryHazards[i] : null;
 
                 // Found one to reset.
-                if (existingHazard.IsWaitingInQueue && hazard.FilterData.PrefabId == existingHazard.FilterData.PrefabId)
+                if (existingHazard && existingHazard.IsWaitingInQueue && hazard.FilterData.PrefabId == existingHazard.FilterData.PrefabId)
                     return existingHazard.ActivateInQueue(position, quaternion);
             }
 
-            // None found and no room for more.
-            if (_.existingHazards.Count >= _.maxHazards)
+            // None found in the primary list and no room for more.
+            if (order == Order.PRIMARY && _.existingPrimaryHazards.Count >= _.maxPrimaryHazards)
                 return null;
 
             // None found and room for more.
             Hazard h = Instantiate(hazard, position, quaternion);
-            _.existingHazards.Add(h);
+            SpawnsChildren spawnsChildren = h.GetComponent<SpawnsChildren>();
+            if (spawnsChildren)
+                spawnsChildren.SetOrder(order);
+
+            if (order == Order.PRIMARY) _.existingPrimaryHazards.Add(h);
+            else if (order == Order.SECONDARY) _.existingSecondaryHazards.Add(h);
+            else if (order == Order.TERTIARY) _.existingTertiaryHazards.Add(h);
+            else if (order == Order.QUATERNARY) _.existingQuaternaryHazards.Add(h);
+
             return hazard;
         }
     }

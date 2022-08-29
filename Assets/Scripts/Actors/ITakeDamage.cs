@@ -11,7 +11,7 @@ namespace SpaceMage.Entities
     public class ITakeDamage : MonoBehaviour
     {
         [SerializeField] protected Health health;                               // Required component.
-        [SerializeField] protected IWaitInQueue iDie;                                   // Optional component allowing death.
+        [SerializeField] protected WaitsInQueue iDie;                                   // Optional component allowing death.
 
         [SerializeField] protected int minSpeedForImpactDamage;                 // Hard minimum speed for impact to occur.
         [SerializeField] protected float extraSpeedDamageMultiplier;            // Adds damage for speed over minimum.
@@ -39,6 +39,6 @@ namespace SpaceMage.Entities
         }
 
         private void Awake() { health = GetComponent<Health>(); }
-        private void Start() { iDie = GetComponentInParent<IWaitInQueue>(); }
+        private void Start() { iDie = GetComponentInParent<WaitsInQueue>(); }
     }
 }

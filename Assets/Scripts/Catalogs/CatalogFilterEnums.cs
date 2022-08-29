@@ -47,4 +47,13 @@ namespace SpaceMage
         VERY_RARE,
         UNIQUE
     }
+
+    public enum Tag
+    {
+        NONE,
+        SMALL,
+        LARGE,
+        SPAWNS_CHILDREN,
+        STATIONARY
+    }
 }

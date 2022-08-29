@@ -14,7 +14,6 @@ GameObject:
   - component: {fileID: 336396073459257785}
   - component: {fileID: 7288841364027542480}
   - component: {fileID: 6312119704428186747}
-  - component: {fileID: 8882148354707729405}
   - component: {fileID: 3121479986386037500}
   - component: {fileID: 3208097671186514075}
   - component: {fileID: 7793139523681048022}
@@ -22,8 +21,9 @@ GameObject:
   - component: {fileID: 7288841364044309892}
   - component: {fileID: -7067012531383671024}
   - component: {fileID: 5041856284980272162}
+  - component: {fileID: 6534180477359425638}
   m_Layer: 0
-  m_Name: Blue Asteroid
+  m_Name: Ice Asteroid Small
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -37,8 +37,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7848861950214568389}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -60.561127, y: 165.38852, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 0.5, y: 0.5, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -108,7 +108,7 @@ Rigidbody2D:
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
-  m_Mass: 3
+  m_Mass: 1
   m_LinearDrag: 0
   m_AngularDrag: 0
   m_GravityScale: 0
@@ -277,18 +277,6 @@ MonoBehaviour:
   iDie: {fileID: 0}
   minSpeedForImpactDamage: 0
   extraSpeedDamageMultiplier: 0
---- !u!114 &8882148354707729405
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7848861950214568389}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2ef75847e9fb8594b8c6b2550f20df2f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &3121479986386037500
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -316,8 +304,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 577210591ec354f4b8a8f18538aab14b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  max: 10
-  current: 10
+  max: 2
+  current: 2
 --- !u!114 &7793139523681048022
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -331,12 +319,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rb: {fileID: 0}
-  isWaitingInQueue: 0
   filterData:
-    prefabId: BlueAsteroid
-    faction: 4
+    prefabId: IceAsteroidSmall
+    faction: 8
     threatLevel: 1
     rarity: 1
+    tags: 01000000
 --- !u!114 &7288841364044309893
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -397,3 +385,16 @@ MonoBehaviour:
   velocityLastFrame: {x: 0, y: 0}
   angularVelocityLastFrame: 0
   obstacleFaceImpacted: 0
+--- !u!114 &6534180477359425638
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7848861950214568389}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 673f555ac3c31e74a86b0edcd4b06efd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isWaitingInQueue: 1

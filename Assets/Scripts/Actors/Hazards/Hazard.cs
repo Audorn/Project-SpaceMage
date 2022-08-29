@@ -5,10 +5,14 @@ using UnityEngine;
 namespace SpaceMage.Entities
 {
     [RequireComponent(typeof(IDealImpactDamage))]
+    [RequireComponent(typeof(WaitsInQueue))]
     public class Hazard : Actor
     {
+        private WaitsInQueue waitsInQueue;
         [SerializeField] private FilterData filterData;
+
         public FilterData FilterData { get { return filterData; } }
+        public bool IsWaitingInQueue { get { return waitsInQueue.IsWaitingInQueue; } }
 
         public Hazard ActivateInQueue(Vector3 position, Quaternion quaternion)
         {
@@ -19,15 +23,20 @@ namespace SpaceMage.Entities
             transform.position = position;
             transform.rotation = quaternion;
             gameObject.SetActive(true);
-            base.ActivateInQueue();
+            waitsInQueue.ActivateInQueue();
 
             return this;
         }
 
-        public override void WaitInQueue()
+        public void WaitInQueue()
         {
             gameObject.SetActive(false);
-            base.WaitInQueue();
+            waitsInQueue.WaitInQueue();
+        }
+
+        private void Awake()
+        {
+            waitsInQueue = GetComponent<WaitsInQueue>();
         }
     }
 }

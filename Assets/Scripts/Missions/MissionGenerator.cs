@@ -90,6 +90,15 @@ namespace SpaceMage.Missions
             // Do work here.
             Debug.Log("Mission generator working...");
 
+            // Move spawn point if split.
+            bool hasSplitMapModifier = MissionManager.CurrentMissionContent.SecondaryModifiers.Contains(SecondaryModifier.SPLIT_MAP);
+            if (hasSplitMapModifier)
+            {
+                Vector2 spawnPoint = MissionManager.CurrentMission.PlayerSpawnPoint;
+                spawnPoint.x -= GameData.DefaultObstacleThickness + GameData.DefaultSplitMapGapThickness / 2 + MissionManager.CurrentMission.MapSize.x / 2;
+                MissionManager.CurrentMission.SetPlayerSpawnPoint(spawnPoint);
+            }
+
             yield return new WaitForFixedUpdate();
             MissionGeneratorStateHandler.DeRegisterActiveMissionGenerator(this);
         }

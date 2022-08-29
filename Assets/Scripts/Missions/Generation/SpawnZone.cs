@@ -79,6 +79,11 @@ namespace SpaceMage.Missions
             if (!isActive)
                 return;
 
+            StartCoroutine(spawnHazardsFromSpawnSettings());
+        }
+
+        private IEnumerator spawnHazardsFromSpawnSettings()
+        {
             for (int i = 0; i < numberOfSpawnSettings; i++)
             {
                 if (spawnSettings[i].IsSpawning)
@@ -86,7 +91,10 @@ namespace SpaceMage.Missions
 
                 if (spawnSettings[i].Catalog == Catalog.HAZARD)
                     StartCoroutine(spawnHazards(spawnSettings[i].SpawnDelay, spawnSettings[i]));
+
                 // TODO: Spawn from other catalogs.
+
+                yield return new WaitForFixedUpdate();
             }
         }
 

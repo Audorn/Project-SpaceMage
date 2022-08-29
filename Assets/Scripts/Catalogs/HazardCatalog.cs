@@ -38,15 +38,44 @@ namespace SpaceMage.Catalogs
                     }
                 }
             }
-            else // Find by tags.
+            else // Find by filter data.
             {
                 foreach (Hazard hazard in _.hazards)
                 {
-                    if (hazard.FilterData.Faction != Faction.ANY && hazard.FilterData.Faction == spawnSettings.FilterData.Faction ||
-                        hazard.FilterData.ThreatLevel != ThreatLevel.ANY && hazard.FilterData.ThreatLevel == spawnSettings.FilterData.ThreatLevel ||
-                        hazard.FilterData.Rarity != Rarity.ANY && hazard.FilterData.Rarity == spawnSettings.FilterData.Rarity ||
-                        hazard.FilterData.Faction == Faction.ANY && hazard.FilterData.ThreatLevel == ThreatLevel.ANY && hazard.FilterData.Rarity == Rarity.ANY)
-                            validHazards.Add(hazard);
+                    // Wrong faction, threatlevel or rarity.
+                    if ((spawnSettings.FilterData.Faction != Faction.ANY && hazard.FilterData.Faction != spawnSettings.FilterData.Faction) ||
+                        (spawnSettings.FilterData.ThreatLevel != ThreatLevel.ANY && hazard.FilterData.ThreatLevel != spawnSettings.FilterData.ThreatLevel) ||
+                        (spawnSettings.FilterData.Rarity != Rarity.ANY && hazard.FilterData.Rarity != spawnSettings.FilterData.Rarity))
+                        continue;
+
+                    // Make sure all tags are present.
+                    bool hasAllTags = true;
+                    if (!spawnSettings.FilterData.Tags.Contains(Tag.NONE))
+                    {
+                        for (int i = 0; i < spawnSettings.FilterData.Tags.Count; i++)
+                        {
+                            bool isTagPresent = false;
+                            for (int j = 0; j < hazard.FilterData.Tags.Count; j++)
+                            {
+                                if (spawnSettings.FilterData.Tags[i] == hazard.FilterData.Tags[j])
+                                {
+                                    isTagPresent = true;
+                                    break;
+                                }
+                            }
+
+                            if (!isTagPresent)
+                            {
+                                hasAllTags = false;
+                                break;
+                            }
+                        }
+                    }
+                    // Not all tags are present.
+                    if (!hasAllTags)
+                        continue;
+
+                    validHazards.Add(hazard);
                 }
             }
 

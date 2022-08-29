@@ -11,4 +11,12 @@ namespace SpaceMage
         SOUTH,
         WEST
     }
+
+    public enum Order
+    {
+        PRIMARY,
+        SECONDARY,
+        TERTIARY,
+        QUATERNARY
+    }
 }

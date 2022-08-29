@@ -41,168 +41,121 @@ namespace SpaceMage.Missions
             missionContent = MissionManager.CurrentMissionContent;
             mission = MissionManager.CurrentMission;
 
-            int baseMapSize = GameData.MapSizeInUnits(missionContent.MapSize);
-            int x = baseMapSize, y = baseMapSize;
+            float aspect = (float)Screen.width / Screen.height;
+            float screenHeightInUnits = Camera.main.orthographicSize * 2;
+            float screenWidthInUnits = screenHeightInUnits * aspect;
+            Vector2 baseMapSize = new Vector2(Mathf.Min(screenWidthInUnits, screenHeightInUnits), Mathf.Min(screenWidthInUnits, screenHeightInUnits));
+            float x = baseMapSize.x, y = baseMapSize.y;
 
             // Flags that modify map x,y size and basic form.
-            bool hasBigMapModifier = missionContent.SecondaryModifiers.Contains(SecondaryModifier.BIG_MAP);         // x1.5 size.
-            bool hasSmallMapModifier = missionContent.SecondaryModifiers.Contains(SecondaryModifier.SMALL_MAP);     // x0.75 size.
-            bool hasMoreThanOneSetpiece = missionContent.SetpieceFactions.Count > 1;                                       // x1.25 size.
-            bool hasWarpZonesModifier = missionContent.SecondaryModifiers.Contains(SecondaryModifier.WARP_ZONES);   // x4 size. Map is broken into smaller submaps.
-            bool hasMultiWarpModifier = missionContent.SecondaryModifiers.Contains(SecondaryModifier.MULTI_WARP);   // x4 size. Map is broken into smaller submaps.
-            bool hasCorridorModifier = missionContent.SecondaryModifiers.Contains(SecondaryModifier.CORRIDOR);      // One direction is max small, the other is 5-10x longer.
+            bool hasBigMapModifier = missionContent.SecondaryModifiers.Contains(SecondaryModifier.BIG_MAP);         // Full-screen.
+            bool hasSmallMapModifier = missionContent.SecondaryModifiers.Contains(SecondaryModifier.SMALL_MAP);     // Mini-screen.
+            bool hasSplitMapModifier = missionContent.SecondaryModifiers.Contains(SecondaryModifier.SPLIT_MAP);     // Two half-screen maps.
+            bool hasCorridorModifier = missionContent.SecondaryModifiers.Contains(SecondaryModifier.CORRIDOR);      // Full width, but narrow.
 
-            if (hasBigMapModifier) { x = (int)(x * 1.5); y = (int)(y * 1.5); }
-            if (hasSmallMapModifier) { x = (int)(x * 0.75); y = (int)(y * 0.75); }
-            if (hasMoreThanOneSetpiece) { x = (int)(x * 1.25); y = (int)(y * 1.25); }
-            if (hasWarpZonesModifier || hasMultiWarpModifier) { x *= 4; y *= 4; }
-            if (hasCorridorModifier)
-            {
-                int shortSideLength = Random.Range(GameData.MapSizeInUnits(MapSize.TINY), GameData.MapSizeInUnits(MapSize.SMALL));
-                int longSideLength = Mathf.Max((x * y) / shortSideLength, shortSideLength * 5);
 
-                if (Random.Range(0, 1) < 0.5f)
-                {
-                    x = shortSideLength;
-                    y = longSideLength;
-                }
-                else
-                {
-                    x = longSideLength;
-                    y = shortSideLength;
-                }
-            }
+            if (hasBigMapModifier) { x = screenWidthInUnits; y = screenHeightInUnits; }
+            else if (hasSmallMapModifier) { x = baseMapSize.x * 0.65f; y = baseMapSize.y * 0.65f; }
+            else if (hasSplitMapModifier) { x = baseMapSize.x * 0.5f; y = baseMapSize.y * 0.7f; } // Two maps.
+            else if (hasCorridorModifier) { x = screenWidthInUnits; y = baseMapSize.y * 0.5f; }
 
-            mission.SetMapSize(new Vector2Int(x, y));
+            mission.SetMapSize(new Vector2(x, y));
 
             yield return new WaitForFixedUpdate();
             MissionContentGeneratorStateHandler.DeRegisterActiveGenerator(this);
         }
 
-        private void setBounds()
+        private void setMapEdges()
         {
             MissionContentGeneratorStateHandler.RegisterActiveGenerator(this);
-            StartCoroutine(_setBounds());
+            StartCoroutine(_setMapEdges());
         }
-        private IEnumerator _setBounds()
+        private IEnumerator _setMapEdges()
         {
             // Do work here.
             Debug.Log("Generator working...");
-            Vector2Int mapSize = mission.MapSize;
+            Vector2 mapSize = mission.MapSize;
 
             int obstacleThickness = GameData.DefaultObstacleThickness;
-            int boundaryRegionThickness = GameData.BoundaryRegionThickness;
-            RectInt boundaryRegion = new RectInt(-boundaryRegionThickness, -boundaryRegionThickness, mapSize.x + boundaryRegionThickness * 2, mapSize.y + boundaryRegionThickness * 2);
             GameObject missionObstacleParent = GameObject.FindGameObjectsWithTag("Mission Obstacle Parent")[0]; // There will only ever be one.
-            mission.SetBoundary(boundaryRegion);
 
-            // Create map boundaries.
-            GameObject boundaryPrefab = GameData.BoundaryPrefab;
-
-            Rect northDimensions = new Rect(0, boundaryRegion.y + boundaryRegion.height, boundaryRegion.width, obstacleThickness);
-            Rect southDimensions = new Rect(0, boundaryRegion.y, boundaryRegion.width, obstacleThickness);
-            Rect westDimensions = new Rect(-(boundaryRegion.width / 2), boundaryRegion.y + boundaryRegion.height / 2, obstacleThickness, boundaryRegion.height - obstacleThickness);
-            Rect eastDimensions = new Rect((boundaryRegion.width / 2), boundaryRegion.y + boundaryRegion.height / 2, obstacleThickness, boundaryRegion.height - obstacleThickness);
-
-            GameObject northBoundary = Instantiate(boundaryPrefab, new Vector3(northDimensions.x, northDimensions.y, 0), Quaternion.identity);
-            GameObject southBoundary = Instantiate(boundaryPrefab, new Vector3(southDimensions.x, southDimensions.y, 0), Quaternion.identity);
-            GameObject westBoundary = Instantiate(boundaryPrefab, new Vector3(westDimensions.x, westDimensions.y, 0), Quaternion.identity);
-            GameObject eastBoundary = Instantiate(boundaryPrefab, new Vector3(eastDimensions.x, eastDimensions.y, 0), Quaternion.identity);
-
-            northBoundary.transform.SetParent(missionObstacleParent.transform);
-            southBoundary.transform.SetParent(missionObstacleParent.transform);
-            westBoundary.transform.SetParent(missionObstacleParent.transform);
-            eastBoundary.transform.SetParent(missionObstacleParent.transform);
-
-            northBoundary.name = "North Boundary";
-            southBoundary.name = "South Boundary";
-            westBoundary.name = "West Boundary";
-            eastBoundary.name = "East Boundary";
-
-            northBoundary.GetComponent<BoxCollider2D>().size = new Vector2(northDimensions.width, northDimensions.height);
-            southBoundary.GetComponent<BoxCollider2D>().size = new Vector2(southDimensions.width, southDimensions.height);
-            westBoundary.GetComponent<BoxCollider2D>().size = new Vector2(westDimensions.width, westDimensions.height);
-            eastBoundary.GetComponent<BoxCollider2D>().size = new Vector2(eastDimensions.width, eastDimensions.height);
-
-            northBoundary.GetComponent<Obstacle>().SetWarpInDirection(Direction.SOUTH);
-            southBoundary.GetComponent<Obstacle>().SetWarpInDirection(Direction.NORTH);
-            westBoundary.GetComponent<Obstacle>().SetWarpInDirection(Direction.EAST);
-            eastBoundary.GetComponent<Obstacle>().SetWarpInDirection(Direction.WEST);
+            // The screen center will always be 0,0,0.
+            GameObject mapEdgePrefab = GameData.MapEdgePrefab;
+            bool hasWrapModifier = missionContent.SecondaryModifiers.Contains(SecondaryModifier.WRAP);
+            bool hasSplitMapModifier = missionContent.SecondaryModifiers.Contains(SecondaryModifier.SPLIT_MAP);
 
             // Create map edges.
-            GameObject mapEdgePrefab = GameData.MapEdgePrefab;
+            Rect northDimensions = new Rect(0, (mapSize.y / 2 + obstacleThickness / 1.5f), mapSize.x + obstacleThickness * 2, obstacleThickness);
+            Rect southDimensions = new Rect(0, -(mapSize.y / 2 + obstacleThickness / 1.5f), mapSize.x + obstacleThickness * 2, obstacleThickness);
+            Rect westDimensions = new Rect(-(mapSize.x / 2 + obstacleThickness / 1.5f), 0, obstacleThickness, mapSize.y);
+            Rect eastDimensions = new Rect((mapSize.x / 2 + obstacleThickness / 1.5f), 0, obstacleThickness, mapSize.y);
 
-            northDimensions = new Rect(0, mapSize.y, mapSize.x, obstacleThickness);
-            southDimensions = new Rect(0, 0, mapSize.x, obstacleThickness);
-            westDimensions = new Rect(-(mapSize.x / 2), mapSize.y / 2, obstacleThickness, mapSize.y - obstacleThickness);
-            eastDimensions = new Rect((mapSize.x / 2), mapSize.y / 2, obstacleThickness, mapSize.y - obstacleThickness);
+            Obstacle northObstacle = createMapEdge(northDimensions, mapEdgePrefab, missionObstacleParent, Direction.NORTH);
+            Obstacle southObstacle = createMapEdge(southDimensions, mapEdgePrefab, missionObstacleParent, Direction.SOUTH);
+            Obstacle westObstacle = createMapEdge(westDimensions, mapEdgePrefab, missionObstacleParent, Direction.WEST);
+            Obstacle eastObstacle = createMapEdge(eastDimensions, mapEdgePrefab, missionObstacleParent, Direction.EAST);
 
-            GameObject northMapEdge = Instantiate(mapEdgePrefab, new Vector3(northDimensions.x, northDimensions.y, 0), Quaternion.identity);
-            GameObject southMapEdge = Instantiate(mapEdgePrefab, new Vector3(southDimensions.x, southDimensions.y, 0), Quaternion.identity);
-            GameObject westMapEdge = Instantiate(mapEdgePrefab, new Vector3(westDimensions.x, westDimensions.y, 0), Quaternion.identity);
-            GameObject eastMapEdge = Instantiate(mapEdgePrefab, new Vector3(eastDimensions.x, eastDimensions.y, 0), Quaternion.identity);
-
-            northMapEdge.transform.SetParent(missionObstacleParent.transform);
-            southMapEdge.transform.SetParent(missionObstacleParent.transform);
-            westMapEdge.transform.SetParent(missionObstacleParent.transform);
-            eastMapEdge.transform.SetParent(missionObstacleParent.transform);
-
-            northMapEdge.name = "North Map Edge";
-            southMapEdge.name = "South Map Edge";
-            westMapEdge.name = "West Map Edge";
-            eastMapEdge.name = "East Map Edge";
-
-            northMapEdge.GetComponent<BoxCollider2D>().size = new Vector2(northDimensions.width, northDimensions.height);
-            southMapEdge.GetComponent<BoxCollider2D>().size = new Vector2(southDimensions.width, southDimensions.height);
-            westMapEdge.GetComponent<BoxCollider2D>().size = new Vector2(westDimensions.width, westDimensions.height);
-            eastMapEdge.GetComponent<BoxCollider2D>().size = new Vector2(eastDimensions.width, eastDimensions.height);
-
-            Obstacle northObstacle = northMapEdge.GetComponent<Obstacle>();
-            Obstacle southObstacle = southMapEdge.GetComponent<Obstacle>();
-            Obstacle westObstacle = westMapEdge.GetComponent<Obstacle>();
-            Obstacle eastObstacle = eastMapEdge.GetComponent<Obstacle>();
-
-            northObstacle.SetWarpInDirection(Direction.SOUTH);
-            southObstacle.SetWarpInDirection(Direction.NORTH);
-            westObstacle.SetWarpInDirection(Direction.EAST);
-            eastObstacle.SetWarpInDirection(Direction.WEST);
-
-            northObstacle.SetIsPermeableToMagic(true);
-            southObstacle.SetIsPermeableToMagic(true);
-            westObstacle.SetIsPermeableToMagic(true);
-            eastObstacle.SetIsPermeableToMagic(true);
-
-            // Apply relevant flags.
-            bool hasWrapModifier = mission.HasSecondaryModifier(SecondaryModifier.WRAP);
-            bool hasWarpModifier = mission.HasSecondaryModifier(SecondaryModifier.WARP_ZONES);
-            bool hasMultiWarpModifier = mission.HasSecondaryModifier(SecondaryModifier.MULTI_WARP);
-
-            if (hasWrapModifier || hasWarpModifier || hasMultiWarpModifier)
-            {
-                northObstacle.SetWarper(true);
-                southObstacle.SetWarper(true);
-                westObstacle.SetWarper(true);
-                eastObstacle.SetWarper(true);
-            }
-
-            if (hasWrapModifier || hasWarpModifier)
-            {
-                northObstacle.SetWarpObstacles(new List<Obstacle>() { southObstacle });
-                southObstacle.SetWarpObstacles(new List<Obstacle>() { northObstacle });
-                westObstacle.SetWarpObstacles(new List<Obstacle>() { eastObstacle });
-                eastObstacle.SetWarpObstacles(new List<Obstacle>() { westObstacle });
-            }
-
-            if (hasMultiWarpModifier)
-            {
-                northObstacle.SetWarpObstacles(new List<Obstacle>() { southObstacle, westObstacle, eastObstacle });
-                southObstacle.SetWarpObstacles(new List<Obstacle>() { northObstacle, westObstacle, eastObstacle });
-                westObstacle.SetWarpObstacles(new List<Obstacle>() { eastObstacle, northObstacle, southObstacle });
-                eastObstacle.SetWarpObstacles(new List<Obstacle>() { westObstacle, northObstacle, southObstacle });
-            }
+            applyMapEdgeModifiers(northObstacle, southObstacle, westObstacle, eastObstacle, hasWrapModifier, hasSplitMapModifier, missionObstacleParent);
 
             yield return new WaitForFixedUpdate();
             MissionContentGeneratorStateHandler.DeRegisterActiveGenerator(this);
+        }
+        private Obstacle createMapEdge(Rect dimensions, GameObject mapEdgePrefab, GameObject missionObstacleParent, Direction direction)
+        {
+            GameObject mapEdge = Instantiate(mapEdgePrefab, new Vector3(dimensions.x, dimensions.y, 0), Quaternion.identity);
+            mapEdge.transform.SetParent(missionObstacleParent.transform);
+            mapEdge.name = (direction == Direction.NORTH) ? "North Map Edge" :
+                           (direction == Direction.SOUTH) ? "South Map Edge" :
+                           (direction == Direction.WEST) ? "West Map Edge" :
+                           (direction == Direction.EAST) ? "East Map Edge" : "NAMING_ERROR";
+            mapEdge.GetComponent<BoxCollider2D>().size = new Vector2(dimensions.width, dimensions.height);
+            Obstacle obstacle = mapEdge.GetComponent<Obstacle>();
+            obstacle.SetWarpInDirection((direction == Direction.NORTH) ? Direction.SOUTH :
+                                        (direction == Direction.SOUTH) ? Direction.NORTH :
+                                        (direction == Direction.WEST) ? Direction.EAST :
+                                        (direction == Direction.EAST) ? Direction.WEST : Direction.NORTH);
+
+            return obstacle;
+        }
+        private void applyMapEdgeModifiers(Obstacle northObstacle, Obstacle southObstacle, Obstacle westObstacle, Obstacle eastObstacle, bool hasWrapModifier, bool hasSplitMapModifier, GameObject missionObstacleParent)
+        {
+            if (hasWrapModifier)
+            {
+                applyMapEdgeWrapTo(northObstacle, southObstacle);
+                applyMapEdgeWrapTo(southObstacle, northObstacle);
+                applyMapEdgeWrapTo(westObstacle, eastObstacle);
+                applyMapEdgeWrapTo(eastObstacle, westObstacle);
+            }
+
+            if (hasSplitMapModifier)
+            {
+                // Duplicate each side, move the first set to the left and the second site to the right.
+                float horizontalDistanceToMove = mission.MapSize.x / 2 + GameData.DefaultObstacleThickness + GameData.DefaultSplitMapGapThickness / 2;
+                Obstacle northObstacle2 = splitObstacle(northObstacle, horizontalDistanceToMove, missionObstacleParent);
+                Obstacle southObstacle2 = splitObstacle(southObstacle, horizontalDistanceToMove, missionObstacleParent);
+                splitObstacle(westObstacle, horizontalDistanceToMove, missionObstacleParent);
+                splitObstacle(eastObstacle, horizontalDistanceToMove, missionObstacleParent);
+
+                // Wrap top left to bottom right and top right to bottom left.
+                applyMapEdgeWrapTo(northObstacle, southObstacle2);
+                applyMapEdgeWrapTo(southObstacle, northObstacle2);
+                applyMapEdgeWrapTo(northObstacle2, southObstacle);
+                applyMapEdgeWrapTo(southObstacle2, northObstacle);
+            }
+        }
+        private void applyMapEdgeWrapTo(Obstacle obstacleFrom, Obstacle obstacleTo) 
+        {
+            obstacleFrom.SetIsWarper(true);
+            obstacleFrom.SetWarpObstacles(new List<Obstacle>() { obstacleTo });
+        }
+        private Obstacle splitObstacle(Obstacle obstacle, float horizontalDistanceToMove, GameObject missionObstacleParent)
+        {
+            Obstacle obstacle2 = Instantiate(obstacle);
+            obstacle2.transform.SetParent(missionObstacleParent.transform);
+            obstacle.transform.position = new Vector3(obstacle.transform.position.x - horizontalDistanceToMove, obstacle.transform.position.y, 0);
+            obstacle2.transform.position = new Vector3(obstacle2.transform.position.x + horizontalDistanceToMove, obstacle2.transform.position.y, 0);
+
+            return obstacle2;
         }
 
         private void placeObjectives()
@@ -259,17 +212,31 @@ namespace SpaceMage.Missions
 
             // TODO: Find some way to differentiate what hazards spawn where. Maybe based on setpieces or objectives.
             GameObject spawnZonePrefab = GameData.SpawnZonePrefab;
-            int squareUnits = mission.MapSize.x * mission.MapSize.y;
-            int numberOfSpawnZones = squareUnits / GameData.SquareUnitsPerSpawnZone;
-            var validSpawnZoneArea = new Rect(GameData.DefaultObstacleThickness / 2 + tempMaxSpawnZoneSize / 2, GameData.DefaultObstacleThickness / 2 + tempMaxSpawnZoneSize / 2, mission.MapSize.x - GameData.DefaultObstacleThickness - tempMaxSpawnZoneSize, mission.MapSize.y - GameData.DefaultObstacleThickness - tempMaxSpawnZoneSize);
+            int numberOfSpawnZones = 50;
+            List<Rect> validSpawnZoneAreas = new List<Rect>() {
+                new Rect(/*-(mission.MapSize.x / 2)*/ tempMaxSpawnZoneSize * 0.25f, -(mission.MapSize.y / 2) + tempMaxSpawnZoneSize * 0.9f, mission.MapSize.x - tempMaxSpawnZoneSize, mission.MapSize.y - tempMaxSpawnZoneSize * 1.5f),
+            };
+
+            if (MissionManager.CurrentMissionContent.SecondaryModifiers.Contains(SecondaryModifier.SPLIT_MAP)) 
+            {
+                float horizontalDistanceToMove = mission.MapSize.x / 2 + GameData.DefaultObstacleThickness + GameData.DefaultSplitMapGapThickness / 2;
+                Rect leftSpawnZoneArea = new Rect(validSpawnZoneAreas[0].x - horizontalDistanceToMove, validSpawnZoneAreas[0].y, validSpawnZoneAreas[0].width, validSpawnZoneAreas[0].height);
+                Rect rightSpawnZoneArea = new Rect(validSpawnZoneAreas[0].x + horizontalDistanceToMove, validSpawnZoneAreas[0].y, validSpawnZoneAreas[0].width, validSpawnZoneAreas[0].height);
+                validSpawnZoneAreas[0] = leftSpawnZoneArea;
+                validSpawnZoneAreas.Add(rightSpawnZoneArea);
+            }
 
             Rect possibleSpawnZoneLocation = new Rect(0,0,0,0);
             for (int i = 0; i < numberOfSpawnZones; i++)
             {
                 // Generate a valid spawn location. Right now, it is an obstacle thickness inside the map edges and not overlapping any other spawn points.
-                possibleSpawnZoneLocation = generatePotentialSpawnZoneRect(validSpawnZoneArea);
-                while (!SpawnZoneManager.IsValidSpawnZoneLocation(possibleSpawnZoneLocation))
-                    possibleSpawnZoneLocation = generatePotentialSpawnZoneRect(validSpawnZoneArea);
+                possibleSpawnZoneLocation = generatePotentialSpawnZoneRects(validSpawnZoneAreas);
+                int count = 0;
+                while (count < 20 && !SpawnZoneManager.IsValidSpawnZoneLocation(possibleSpawnZoneLocation))
+                {
+                    possibleSpawnZoneLocation = generatePotentialSpawnZoneRects(validSpawnZoneAreas);
+                    count++;
+                }
 
                 // Create the spawn zone and place it.
                 GameObject spawnZoneObject = Instantiate(spawnZonePrefab, new Vector3(possibleSpawnZoneLocation.x, possibleSpawnZoneLocation.y, 0), Quaternion.identity);
@@ -291,8 +258,11 @@ namespace SpaceMage.Missions
         }
         private float tempMinSpawnZoneSize = 5;
         private float tempMaxSpawnZoneSize = 10;
-        private Rect generatePotentialSpawnZoneRect(Rect validSpawnZoneArea)
+        private Rect generatePotentialSpawnZoneRects(List<Rect> validSpawnZoneAreas)
         {
+            int index = Random.Range(0, validSpawnZoneAreas.Count);
+            Rect validSpawnZoneArea = validSpawnZoneAreas[index];
+
             float x = Random.Range(validSpawnZoneArea.x - validSpawnZoneArea.width / 2, validSpawnZoneArea.x + validSpawnZoneArea.width / 2);
             float y = Random.Range(validSpawnZoneArea.y, validSpawnZoneArea.y + validSpawnZoneArea.height);
             float width = Random.Range(tempMinSpawnZoneSize, tempMaxSpawnZoneSize);
@@ -331,7 +301,7 @@ namespace SpaceMage.Missions
         private void Start()
         {
             MissionContentGeneratorStateHandler.Singleton.Initializing.AddListener(initialize);
-            MissionContentGeneratorStateHandler.Singleton.SettingBounds.AddListener(setBounds);
+            MissionContentGeneratorStateHandler.Singleton.SettingBounds.AddListener(setMapEdges);
             MissionContentGeneratorStateHandler.Singleton.PlacingObjectives.AddListener(placeObjectives);
             MissionContentGeneratorStateHandler.Singleton.PlacingSetpieces.AddListener(placeSetpieces);
             MissionContentGeneratorStateHandler.Singleton.PlacingObstacles.AddListener(placeObstacles);

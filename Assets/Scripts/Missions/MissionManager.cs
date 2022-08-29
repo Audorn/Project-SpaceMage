@@ -110,8 +110,8 @@ namespace SpaceMage.Missions
         ALLY_PRESENCE,
         FACTION_PRESENCE,
         WRAP,
-        WARP_ZONES,
-        MULTI_WARP
+        SPLIT_MAP,
+        WARP
     }
 
     public enum Objective

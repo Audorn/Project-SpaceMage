@@ -365,13 +365,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   missionContent: {fileID: 0}
   mapSize: {x: 0, y: 0}
-  boundary:
-    x: 0
-    y: 0
-    width: 0
-    height: 0
-  playerSpawnPoint: {x: 0, y: 15}
-  spawnZones: []
+  playerSpawnPoint: {x: 0, y: 0}
 --- !u!1 &6479834893354700715
 GameObject:
   m_ObjectHideFlags: 0

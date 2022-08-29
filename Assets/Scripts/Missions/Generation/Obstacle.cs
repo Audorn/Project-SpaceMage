@@ -16,9 +16,9 @@ namespace SpaceMage.Missions
         [SerializeField] private float validWarpPercentage;         // How much of this object (along the face, from the center) is valid spawning area.
 
         public bool IsWarper { get { return isWarper; } }
-        public void SetWarper(bool value) { isWarper = value; }
+        public void SetIsWarper(bool value) { isWarper = value; }
         public bool IsWarperToMagic { get { return isWarperToMagic; } }
-        public void SetWarperToMagic(bool value) { isWarperToMagic = value; }
+        public void SetIsWarperToMagic(bool value) { isWarperToMagic = value; }
         public bool IsPermeable { get { return isPermeable; } }
         public void SetIsPermeable(bool value) { isPermeable = value; }
         public bool IsPermeableToMagic { get { return isPermeableToMagic; } }
