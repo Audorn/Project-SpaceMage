@@ -12,6 +12,7 @@ namespace SpaceMage.Entities
         public int Current { get { return current; } }
         public bool IsFull() { return max == current; }
 
+        public void Fill() { current = max; }
         public void Change(int amount) { current += amount; }
     }
 }

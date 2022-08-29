@@ -16,12 +16,18 @@ namespace SpaceMage.Missions
         [SerializeField] private float validWarpPercentage;         // How much of this object (along the face, from the center) is valid spawning area.
 
         public bool IsWarper { get { return isWarper; } }
+        public void SetWarper(bool value) { isWarper = value; }
         public bool IsWarperToMagic { get { return isWarperToMagic; } }
+        public void SetWarperToMagic(bool value) { isWarperToMagic = value; }
         public bool IsPermeable { get { return isPermeable; } }
+        public void SetIsPermeable(bool value) { isPermeable = value; }
         public bool IsPermeableToMagic { get { return isPermeableToMagic; } }
+        public void SetIsPermeableToMagic(bool value) { isPermeableToMagic = value; }
         public List<Obstacle> WarpObstacles { get { return warpObstacles; } }
-        public Direction SpawnDirection { get { return warpInDirection; } }
+        public void SetWarpObstacles(List<Obstacle> obstacles) { warpObstacles = obstacles; }
+        public Direction WarpInDirection { get { return warpInDirection; } }
         public float ValidWarpPercentage { get { return validWarpPercentage; } }
+        public void SetValidWarpPercentage(float amount) { validWarpPercentage = Mathf.Min(1f, amount); }
 
         public Obstacle GetWarpDestination()
         {
@@ -35,15 +41,17 @@ namespace SpaceMage.Missions
         public Direction RequestWarpIn(CollidesWithObstacles collidesWithObstacles, out Vector2 position)
         {
             SpriteRenderer spriteRenderer = collidesWithObstacles.GetComponent<SpriteRenderer>();
-            position = GetWarpInLocation(spriteRenderer.bounds.size);
+            position = getWarpInLocation(spriteRenderer.bounds.size);
 
             return warpInDirection;
         }
 
-        private Vector2 GetWarpInLocation(Vector2 spriteSize)
+        public void SetWarpInDirection(Direction direction) { warpInDirection = direction; }
+        private Vector2 getWarpInLocation(Vector2 spriteSize)
         {
-            float distanceFromWarpInFace = (warpInDirection == Direction.NORTH || warpInDirection == Direction.SOUTH) ? (transform.localScale.y / 2) + (spriteSize.y / 2) : (transform.localScale.x / 2) + (spriteSize.x / 2);
-            float distanceAlongWarpInFace = transform.localScale.x * (validWarpPercentage / 2);
+            BoxCollider2D collider = GetComponent<BoxCollider2D>();
+            float distanceFromWarpInFace = (warpInDirection == Direction.NORTH || warpInDirection == Direction.SOUTH) ? (collider.size.y / 2) + (spriteSize.y / 2) : (collider.size.x / 2) + (spriteSize.x / 2);
+            float distanceAlongWarpInFace = (warpInDirection == Direction.NORTH || warpInDirection == Direction.SOUTH) ? collider.size.x * (validWarpPercentage / 2) : collider.size.y * (validWarpPercentage / 2);
 
             Vector2 position = Vector2.zero;
 

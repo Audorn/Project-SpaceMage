@@ -19,8 +19,8 @@ namespace SpaceMage.Missions
         [SerializeField] private List<PrimaryModifier> primaryModifiers;
         [SerializeField] private List<SecondaryModifier> secondaryModifiers;
         [SerializeField] private List<Objective> objectives;
-        [SerializeField] private List<GameObject> setpieces;
-        [SerializeField] private List<GameObject> hazards;
+        [SerializeField] private List<Faction> setpieceFactions;
+        [SerializeField] private List<Faction> hazardFactions;
         
         public MissionType MissionType { get { return missionType; } }
         public MapSize MapSize { get { return mapSize; } }
@@ -34,8 +34,8 @@ namespace SpaceMage.Missions
         public List<PrimaryModifier> PrimaryModifiers { get { return primaryModifiers; } }
         public List<SecondaryModifier> SecondaryModifiers { get { return secondaryModifiers; } }
         public List<Objective> Objectives { get { return objectives; } }
-        public List<GameObject> Setpieces { get { return setpieces; } }
-        public List<GameObject> Hazards { get { return hazards; } }
+        public List<Faction> SetpieceFactions { get { return setpieceFactions; } }
+        public List<Faction> HazardFactions { get { return hazardFactions; } }
 
         public void SetMissionType(MissionType missionType) { this.missionType = missionType; }
         public void SetMapSize(MapSize mapSize) { this.mapSize = mapSize; }
@@ -49,7 +49,7 @@ namespace SpaceMage.Missions
         public void SetPrimaryModifiers(List<PrimaryModifier> primaryModifiers) { this.primaryModifiers = primaryModifiers; }
         public void SetSecondaryModifiers(List<SecondaryModifier> secondaryModifiers) { this.secondaryModifiers = secondaryModifiers; }
         public void SetObjectives(List<Objective> objectives) { this.objectives = objectives; }
-        public void SetSetpieces(List<GameObject> setpieces) { this.setpieces = setpieces; }
-        public void SetHazards(List<GameObject> hazards) { this.hazards = hazards; }
+        public void SetSetpieceFactions(List<Faction> setpieceFactions) { this.setpieceFactions = setpieceFactions; }
+        public void SetHazardFactions(List<Faction> hazardFactions) { this.hazardFactions = hazardFactions; }
     }
 }

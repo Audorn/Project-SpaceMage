@@ -139,13 +139,13 @@ namespace SpaceMage.Missions
             Debug.Log("Content selector working...");
             int quantity = calculateQuantityToSelect(missionPossibleContent.PercentSetpiecesTable, missionPossibleContent.QuantitySetpiecesTable);
 
-            var guaranteed = missionPossibleContent.GuaranteedSetpieces;
-            var likely = missionPossibleContent.LikelySetpieces;
-            var blocked = missionPossibleContent.BlockedSetpieces;
-            var all = GameData.SetpiecePrefabs;
+            var guaranteed = missionPossibleContent.GuaranteedSetpieceFactions.ConvertAll(value => (int)value);
+            var likely = missionPossibleContent.LikelySetpieceFactions.ConvertAll(value => (int)value);
+            var blocked = missionPossibleContent.BlockedSetpieceFactions.ConvertAll(value => (int)value);
+            var all = ((Faction[])Enum.GetValues(typeof(Faction))).ToList().ConvertAll(value => (int)value);
 
-            var selected = selectOptionsFromPrefabs(quantity, guaranteed, likely, blocked, all);
-            missionContent.SetSetpieces(selected);
+            var selected = selectOptionsFromEnumAsInts(quantity, guaranteed, likely, blocked, all).ConvertAll(value => (Faction)value);
+            missionContent.SetSetpieceFactions(selected);
 
             yield return new WaitForFixedUpdate();
             MissionContentSelectorStateHandler.DeRegisterActiveContentSelector(this);
@@ -162,13 +162,13 @@ namespace SpaceMage.Missions
             Debug.Log("Content selector working...");
             int quantity = calculateQuantityToSelect(missionPossibleContent.PercentHazardsTable, missionPossibleContent.QuantityHazardsTable);
 
-            var guaranteed = missionPossibleContent.GuaranteedHazards;
-            var likely = missionPossibleContent.LikelyHazards;
-            var blocked = missionPossibleContent.BlockedHazards;
-            var all = GameData.HazardPrefabs;
+            var guaranteed = missionPossibleContent.GuaranteedHazardFactions.ConvertAll(value => (int)value);
+            var likely = missionPossibleContent.LikelyHazardFactions.ConvertAll(value => (int)value);
+            var blocked = missionPossibleContent.BlockedHazardFactions.ConvertAll(value => (int)value);
+            var all = ((Faction[])Enum.GetValues(typeof(Faction))).ToList().ConvertAll(value => (int)value);
 
-            var selected = selectOptionsFromPrefabs(quantity, guaranteed, likely, blocked, all);
-            missionContent.SetHazards(selected);
+            var selected = selectOptionsFromEnumAsInts(quantity, guaranteed, likely, blocked, all).ConvertAll(value => (Faction)value);
+            missionContent.SetHazardFactions(selected);
 
             yield return new WaitForFixedUpdate();
             MissionContentSelectorStateHandler.DeRegisterActiveContentSelector(this);

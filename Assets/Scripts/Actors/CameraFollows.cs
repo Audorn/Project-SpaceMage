@@ -23,7 +23,7 @@ namespace SpaceMage.Entities
                 return;
 
             Vector2 distance = (Vector2)transform.position - (Vector2)camera.transform.position;
-            if (Mathf.Abs(distance.x) <= maxDistance.x || Mathf.Abs(distance.y) <= maxDistance.y)
+            if (Mathf.Abs(distance.x) < maxDistance.x || Mathf.Abs(distance.y) < maxDistance.y)
                 return;
 
             Vector3 position = Vector3.Slerp(camera.transform.position, transform.position, followSpeed * Time.deltaTime);
@@ -34,6 +34,7 @@ namespace SpaceMage.Entities
         private void Start()
         {
             camera = GameObject.Find("Main Camera").GetComponent<Camera>();
+            camera.transform.position = new Vector3(transform.position.x, transform.position.y, -1);
         }
     }
 }

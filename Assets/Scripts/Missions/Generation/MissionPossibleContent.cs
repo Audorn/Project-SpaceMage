@@ -47,15 +47,15 @@ namespace SpaceMage.Missions
 
         [SerializeField] private List<int> quantitySetpiecesTable = new List<int>();
         [SerializeField] private List<float> percentSetpiecesTable = new List<float>();
-        [SerializeField] private List<GameObject> guaranteedSetpieces = new List<GameObject>();
-        [SerializeField] private List<GameObject> likelySetpieces = new List<GameObject>();
-        [SerializeField] private List<GameObject> blockedSetpieces = new List<GameObject>();
+        [SerializeField] private List<Faction> guaranteedSetpieceFactions = new List<Faction>();
+        [SerializeField] private List<Faction> likelySetpieceFactions = new List<Faction>();
+        [SerializeField] private List<Faction> blockedSetpieceFactions = new List<Faction>();
 
         [SerializeField] private List<int> quantityHazardsTable = new List<int>();
         [SerializeField] private List<float> percentHazardsTable = new List<float>();
-        [SerializeField] private List<GameObject> guaranteedHazards = new List<GameObject>();
-        [SerializeField] private List<GameObject> likelyHazards = new List<GameObject>();
-        [SerializeField] private List<GameObject> blockedHazards = new List<GameObject>();
+        [SerializeField] private List<Faction> guaranteedHazardFactions = new List<Faction>();
+        [SerializeField] private List<Faction> likelyHazardFactions = new List<Faction>();
+        [SerializeField] private List<Faction> blockedHazardFactions = new List<Faction>();
 
         // ===================================================
         // ==================== ACCESSORS ====================
@@ -97,14 +97,14 @@ namespace SpaceMage.Missions
 
         public List<float> PercentSetpiecesTable { get { return percentSetpiecesTable; } }
         public List<int> QuantitySetpiecesTable { get { return quantitySetpiecesTable; } }
-        public List<GameObject> GuaranteedSetpieces { get { return guaranteedSetpieces; } set { guaranteedSetpieces = value; } }
-        public List<GameObject> LikelySetpieces { get { return likelySetpieces; } set { likelySetpieces = value; } }
-        public List<GameObject> BlockedSetpieces { get { return blockedSetpieces; } set { blockedSetpieces = value; } }
+        public List<Faction> GuaranteedSetpieceFactions { get { return guaranteedSetpieceFactions; } set { guaranteedSetpieceFactions = value; } }
+        public List<Faction> LikelySetpieceFactions { get { return likelySetpieceFactions; } set { likelySetpieceFactions = value; } }
+        public List<Faction> BlockedSetpieceFactions { get { return blockedSetpieceFactions; } set { blockedSetpieceFactions = value; } }
 
         public List<float> PercentHazardsTable { get { return percentHazardsTable; } }
         public List<int> QuantityHazardsTable { get { return quantityHazardsTable; } }
-        public List<GameObject> GuaranteedHazards { get { return guaranteedHazards; } set { guaranteedHazards = value; } }
-        public List<GameObject> LikelyHazards { get { return likelyHazards; } set { likelyHazards = value; } }
-        public List<GameObject> BlockedHazards { get { return blockedHazards; } set { blockedHazards = value; } }
+        public List<Faction> GuaranteedHazardFactions { get { return guaranteedHazardFactions; } set { guaranteedHazardFactions = value; } }
+        public List<Faction> LikelyHazardFactions { get { return likelyHazardFactions; } set { likelyHazardFactions = value; } }
+        public List<Faction> BlockedHazardFactions { get { return blockedHazardFactions; } set { blockedHazardFactions = value; } }
     }
 }

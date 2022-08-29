@@ -144,8 +144,8 @@ namespace SpaceMage.Missions
                 if (position != Vector2.zero)
                 {
                     // TODO: Allow to override starting rotation (not torque, but how the object is rotated when instantiated).
-                    Hazard h = Instantiate(hazard, position, Quaternion.identity);
-                    if (overridePrefabSpawnMotion)
+                    Hazard h = HazardManager.InstantiateHazard(hazard, position, Quaternion.identity);
+                    if (h && overridePrefabSpawnMotion)
                     {
                         SpawnWithMotion spawnWithMotion = h.GetComponent<SpawnWithMotion>();
 

@@ -21,7 +21,7 @@ namespace SpaceMage.Entities
         public void ModifyVelocity(float modifier) { minVelocity *= modifier; maxVelocity *= modifier; }
         public void ModifyRotation(float modifier) { minRotation *= modifier; maxRotation *= modifier; }
 
-        private void Start()
+        private void OnEnable()
         {
             rb = GetComponent<Rigidbody2D>();
 

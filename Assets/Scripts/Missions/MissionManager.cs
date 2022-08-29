@@ -40,10 +40,9 @@ namespace SpaceMage.Missions
         [SerializeField] private List<MissionPossibleContent> possibleMissionContents = new List<MissionPossibleContent>();
         [SerializeField] private MissionContent currentMissionContent;
 
-        private void activateSpawnZones() { missionList.CurrentMission.ToggleSpawnZones(true); }
+        private void activateSpawnZones() { Debug.Log("Activating spawn zones."); SpawnZoneManager.ToggleSpawnZones(true); }
         private void createPlayer() 
         {
-            Debug.LogWarning("testing");
             GameObject playerPrefab = GameData.PlayerPrefab;
             GameObject player = Instantiate(playerPrefab, missionList.CurrentMission.PlayerSpawnPoint, Quaternion.identity);
         }

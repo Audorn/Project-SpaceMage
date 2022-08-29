@@ -3,7 +3,11 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - Mission Obstacle Parent
+  - Boundary Obstacle
+  - Map Edge Obstacle
+  - Spawn Zones Parent
   layers:
   - Default
   - TransparentFX

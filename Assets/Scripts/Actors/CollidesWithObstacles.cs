@@ -8,9 +8,9 @@ namespace SpaceMage.Entities
     public class CollidesWithObstacles : MonoBehaviour
     {
         private Rigidbody2D rb;
-        private Vector2 velocityLastFrame;
-        private float angularVelocityLastFrame;
-        private Direction obstacleFaceImpacted;
+        [SerializeField] private Vector2 velocityLastFrame;
+        [SerializeField] private float angularVelocityLastFrame;
+        [SerializeField] private Direction obstacleFaceImpacted;
 
         private void OnCollisionEnter2D(Collision2D collision)
         {
@@ -26,7 +26,8 @@ namespace SpaceMage.Entities
                 (!obstacle.IsWarper && magical == null) || (magical && !obstacle.IsWarperToMagic))
             {
                 Vector2 cardinalImpactNormal = (obstacleFaceImpacted == Direction.NORTH || obstacleFaceImpacted == Direction.SOUTH) ? Vector2.up : Vector2.right;
-                rb.velocity = Vector2.Reflect(velocityLastFrame, cardinalImpactNormal);
+                if (rb)
+                    rb.velocity = Vector2.Reflect(velocityLastFrame, cardinalImpactNormal);
             }
 
             // Obstacle is permeable to this actor - warp through it.
@@ -89,7 +90,8 @@ namespace SpaceMage.Entities
             }
 
             // Get rid of any unwanted spinning.
-            rb.angularVelocity = angularVelocityLastFrame;
+            if (rb)
+                rb.angularVelocity = angularVelocityLastFrame;
         }
 
         private Vector2 getDistanceToWarpAcrossObstacle(Obstacle obstacle)
@@ -117,34 +119,56 @@ namespace SpaceMage.Entities
             if (!hit)
                 return;
 
-            Vector2 localPoint = hit.transform.InverseTransformPoint(hit.point);
-            Vector2 localDirection = localPoint.normalized;
+            Obstacle obstacle = hit.collider.gameObject.GetComponent<Obstacle>();
+            if (!obstacle)
+                return;
 
-            float upDot = Vector2.Dot(localDirection, Vector2.up);
-            float rightDot = Vector2.Dot(localDirection, Vector2.right);
+            if (obstacle.tag == "Boundary Obstacle" || obstacle.tag == "Map Edge Obstacle")
+            {
+                if (obstacle.WarpInDirection == Direction.SOUTH && hit.point.y < hit.collider.transform.position.y)
+                    obstacleFaceImpacted = Direction.SOUTH;
+                else if (obstacle.WarpInDirection == Direction.NORTH && hit.point.y > hit.collider.transform.position.y)
+                    obstacleFaceImpacted = Direction.NORTH;
+                else if (obstacle.WarpInDirection == Direction.EAST && hit.point.x > hit.collider.transform.position.x)
+                    obstacleFaceImpacted = Direction.EAST;
+                else if (obstacle.WarpInDirection == Direction.WEST && hit.point.x < hit.collider.transform.position.x)
+                    obstacleFaceImpacted = Direction.WEST;
+            }
 
-            if (upDot > 0 && upDot > Mathf.Abs(rightDot))
-                obstacleFaceImpacted = Direction.NORTH;
-            else if (upDot < 0 && Mathf.Abs(upDot) > Mathf.Abs(rightDot))
-                obstacleFaceImpacted = Direction.SOUTH;
-            else if (rightDot > 0 && rightDot > Mathf.Abs(upDot))
-                obstacleFaceImpacted = Direction.EAST;
-            else if (rightDot < 0 && Mathf.Abs(rightDot) > Mathf.Abs(upDot))
-                obstacleFaceImpacted = Direction.WEST;
+            //Vector2 localPoint = hit.transform.InverseTransformPoint(hit.point);
+            //Vector2 localDirection = localPoint.normalized;
+
+            //float upDot = Vector2.Dot(localDirection, Vector2.up);
+            //float rightDot = Vector2.Dot(localDirection, Vector2.right);
+
+            //if (upDot > 0 && upDot > Mathf.Abs(rightDot))
+            //    obstacleFaceImpacted = Direction.NORTH;
+            //else if (upDot < 0 && Mathf.Abs(upDot) > Mathf.Abs(rightDot))
+            //    obstacleFaceImpacted = Direction.SOUTH;
+            //else if (rightDot > 0 && rightDot > Mathf.Abs(upDot))
+            //    obstacleFaceImpacted = Direction.EAST;
+            //else if (rightDot < 0 && Mathf.Abs(rightDot) > Mathf.Abs(upDot))
+            //    obstacleFaceImpacted = Direction.WEST;
         }
 
         private void FixedUpdate()
         {
-            velocityLastFrame = rb.velocity;
-            angularVelocityLastFrame = rb.angularVelocity;
+            if (rb)
+            {
+                velocityLastFrame = rb.velocity;
+                angularVelocityLastFrame = rb.angularVelocity;
+            }
         }
 
         private void OnDrawGizmos()
         {
             Gizmos.color = Color.yellow;
             rb = GetComponentInParent<Rigidbody2D>();
-            Vector3 direction = rb.velocity;
-            Gizmos.DrawRay(transform.position, direction);
+            if (rb)
+            {
+                Vector3 direction = rb.velocity;
+                Gizmos.DrawRay(transform.position, direction);
+            }
         }
 
         private void Start()
