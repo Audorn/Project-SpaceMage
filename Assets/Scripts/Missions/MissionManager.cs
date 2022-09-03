@@ -43,7 +43,7 @@ namespace SpaceMage.Missions
         private void activateSpawnZones() { Debug.Log("Activating spawn zones."); SpawnZoneManager.ToggleSpawnZones(true); }
         private void createPlayer() 
         {
-            GameObject playerPrefab = GameData.PlayerPrefab;
+            GameObject playerPrefab = PrefabManager.PlayerPrefab;
             GameObject player = Instantiate(playerPrefab, missionList.CurrentMission.PlayerSpawnPoint, Quaternion.identity);
         }
 

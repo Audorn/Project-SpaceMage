@@ -10,8 +10,8 @@ namespace SpaceMage.Entities
     /// </summary>
     public class Ship : MonoBehaviour
     {
-        [SerializeField] private FilterData filterData;
-        public FilterData FilterData { get { return filterData; } }
+        [SerializeField] private CatalogFilterData filterData;
+        public CatalogFilterData FilterData { get { return filterData; } }
 
         // =================================================
         // ==================== CONTROL ====================

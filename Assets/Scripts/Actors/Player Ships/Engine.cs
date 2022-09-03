@@ -7,8 +7,8 @@ namespace SpaceMage
     // Handles acceleration and deceleration of an actor.
     public class Engine : MonoBehaviour
     {
-        [SerializeField] private FilterData filterData;
-        public FilterData FilterData { get { return filterData; } }
+        [SerializeField] private CatalogFilterData filterData;
+        public CatalogFilterData FilterData { get { return filterData; } }
 
         [SerializeField] private float baseAcceleration = 1.0f;
         public float BaseAcceleration { get { return baseAcceleration; } }
