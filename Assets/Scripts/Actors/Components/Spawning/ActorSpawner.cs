@@ -14,9 +14,9 @@ namespace SpaceMage.Entities
         /// </summary>
         /// <param name="settings">The list of everything this actor can spawn.</param>
         /// <param name="spawnEvent">The type of event that just occurred.</param>
-        public static void SpawnActors(List<ActorSpawnSettings> settings, SpawnEvent spawnEvent)
+        public static void SpawnActors(Vector2 parentVelocity, List<ActorSpawnSettings> settings, SpawnEvent spawnEvent, SpawnPool poolToSpawnIn)
         {
-            SpawnZoneManager.Singleton.StartCoroutine(_spawnActors(settings, spawnEvent, new PersistentFlag(true)));
+            SpawnZoneManager.Singleton.StartCoroutine(_spawnActors(parentVelocity, settings, spawnEvent, poolToSpawnIn, new PersistentFlag(true)));
         }
 
         /// <summary>
@@ -26,7 +26,7 @@ namespace SpaceMage.Entities
         /// <param name="spawnEvent">The type of even that just occurred.</param>
         /// <param name="safeToSpawn">Allows spawning to coordinate so that no spawn from the same source can occur on the same frame.</param>
         /// <returns></returns>
-        private static IEnumerator _spawnActors(List<ActorSpawnSettings> settings, SpawnEvent spawnEvent, PersistentFlag safeToSpawn)
+        private static IEnumerator _spawnActors(Vector2 parentVelocity, List<ActorSpawnSettings> settings, SpawnEvent spawnEvent, SpawnPool poolToSpawnIn, PersistentFlag safeToSpawn)
         {
             int numberOfSettings = settings.Count;
             for (int i = 0; i < numberOfSettings; i++)
@@ -35,7 +35,7 @@ namespace SpaceMage.Entities
                 if (spawnEvent != settings[i].SpawnEvent)
                     continue;
 
-                SpawnZoneManager.Singleton.StartCoroutine(_spawnActors(settings[i], safeToSpawn));
+                SpawnZoneManager.Singleton.StartCoroutine(_spawnActors(parentVelocity, settings[i], poolToSpawnIn, safeToSpawn));
                 yield return new WaitForFixedUpdate();
             }
         }
@@ -46,7 +46,7 @@ namespace SpaceMage.Entities
         /// <param name="settings">The ActorSpawnSettings that should spawn now.</param>
         /// <param name="safeToSpawn">Allows spawning to coordinate so that no spawn from the same source can occur on the same frame.</param>
         /// <returns></returns>
-        private static IEnumerator _spawnActors(ActorSpawnSettings settings, PersistentFlag safeToSpawn)
+        private static IEnumerator _spawnActors(Vector2 parentVelocity, ActorSpawnSettings settings, SpawnPool poolToSpawnIn, PersistentFlag safeToSpawn)
         {
             // Nothing to spawn.
             if (settings.Actors.Count == 0)
@@ -61,8 +61,7 @@ namespace SpaceMage.Entities
             for (int i = 0; i < iterations; i++)
             {
                 int numberOfSpawnSets = Mathf.Min(settings.NumberToSpawn.Count, settings.Actors.Count);
-                SpawnPool spawnPool = settings.ParentSpawnPool.Next(false);
-                SpawnZoneManager.Singleton.StartCoroutine(spawn(settings, i, spawnPool, safeToSpawn));
+                SpawnZoneManager.Singleton.StartCoroutine(spawn(parentVelocity, settings, i, poolToSpawnIn, safeToSpawn));
                 yield return new WaitForFixedUpdate();
             }
         }
@@ -74,7 +73,7 @@ namespace SpaceMage.Entities
         /// <param name="index">The index of the list of Actor and NumberToSpawn lists.</param>
         /// <param name="safeToSpawn">Allows spawning to coordinate so that no spawn from the same source can occur on the same frame.</param>
         /// <returns></returns>
-        private static IEnumerator spawn(ActorSpawnSettings settings, int index, SpawnPool spawnPool, PersistentFlag safeToSpawn)
+        private static IEnumerator spawn(Vector2 parentVelocity, ActorSpawnSettings settings, int index, SpawnPool poolToSpawnIn, PersistentFlag safeToSpawn)
         {
             int numberToSpawn = settings.NumberToSpawn[index];
             Actor actorPrefab = settings.Actors[index];
@@ -88,9 +87,10 @@ namespace SpaceMage.Entities
                 isSpawning = true;
                 safeToSpawn.SetFlag(false);
 
-                Actor actor = ActorManager.Instantiate(actorPrefab, settings.SpawnAtTransform, spawnPool);
+                Actor actor = ActorManager.Instantiate(parentVelocity, actorPrefab, settings.SpawnAtTransform, settings.Momentum, poolToSpawnIn);
                 if (actor)
-                    actor.SetSpawnPool(spawnPool);
+                    actor.SetSpawnPool(poolToSpawnIn);
+
                 yield return new WaitForSeconds(settings.DelayAfterSpawn);
             }
 
@@ -100,22 +100,24 @@ namespace SpaceMage.Entities
         // ========== END STATIC MANAGER ==========
 
         // ---------- COMPONENT ----------
-        private SpawnPool spawnPool = SpawnPool.PRIMARY;
+        private SpawnPool poolToSpawnIn = SpawnPool.PRIMARY;
 
-        public SpawnPool SpawnPool { get { return spawnPool; } }
-        public void SetSpawnPool(SpawnPool spawnPool) { this.spawnPool = spawnPool; }
+        public SpawnPool PoolToSpawnIn { get { return poolToSpawnIn; } }
+        public void SetPoolToSpawnIn(SpawnPool poolToSpawnIn) { this.poolToSpawnIn = poolToSpawnIn; }
 
         [SerializeField] private List<ActorSpawnSettings> actorSpawnSettings = new List<ActorSpawnSettings>();
 
         public List<ActorSpawnSettings> ActorSpawnSettings { get { return actorSpawnSettings; } }
 
-        private void Awake()
+        private void Start()
         {
             int numberOfSettings = actorSpawnSettings.Count;
             for (int i = 0; i < numberOfSettings; i++)
             {
                 actorSpawnSettings[i].SetTransform(transform);
-                actorSpawnSettings[i].SetParentSpawnPool(spawnPool);
+                Actor actor = GetComponent<Actor>();
+                if (actor)
+                    poolToSpawnIn = actor.SpawnPool.Next();
             }
         }
         // ---------- END COMPONENT ----------

@@ -7,14 +7,14 @@ namespace SpaceMage.Missions
 {
     public class SpawnZoneGenerator : MissionContentGeneratorCog
     {
-        private float tempMinSpawnZoneSize = 5;
-        private float tempMaxSpawnZoneSize = 10;
+        private float tempMinSpawnZoneSize = 3;
+        private float tempMaxSpawnZoneSize = 6;
 
         public void Execute()
         {
             // TODO: Find some way to differentiate what hazards spawn where. Maybe based on setpieces or objectives.
             GameObject spawnZonePrefab = PrefabManager.SpawnZonePrefab;
-            int numberOfSpawnZones = 50;
+            int numberOfSpawnZones = 5;
             List<Rect> validSpawnZoneAreas = new List<Rect>() {
                 new Rect(
                     tempMaxSpawnZoneSize * 0.25f, 

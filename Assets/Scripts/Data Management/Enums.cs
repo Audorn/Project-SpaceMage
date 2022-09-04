@@ -82,4 +82,11 @@ namespace SpaceMage
         SPAWNS_CHILDREN,
         STATIONARY
     }
+
+    public enum Momentum
+    {
+        OVERRIDE,
+        RETAIN,
+        AVERAGE
+    }
 }

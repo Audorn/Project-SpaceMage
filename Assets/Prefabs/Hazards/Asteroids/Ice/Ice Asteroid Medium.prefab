@@ -13,8 +13,6 @@ GameObject:
   - component: {fileID: 3140698537351389071}
   - component: {fileID: 336396073459257785}
   - component: {fileID: 7288841364027542480}
-  - component: {fileID: 6312119704428186747}
-  - component: {fileID: 3121479986386037500}
   - component: {fileID: 3208097671186514075}
   - component: {fileID: 7793139523681048022}
   - component: {fileID: 7288841364044309893}
@@ -23,6 +21,8 @@ GameObject:
   - component: {fileID: 5041856284980272162}
   - component: {fileID: 6534180477359425638}
   - component: {fileID: 80272590631800220}
+  - component: {fileID: 2782789494380755379}
+  - component: {fileID: 2789380747663269391}
   m_Layer: 0
   m_Name: Ice Asteroid Medium
   m_TagString: Untagged
@@ -109,7 +109,7 @@ Rigidbody2D:
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
-  m_Mass: 3
+  m_Mass: 6
   m_LinearDrag: 0
   m_AngularDrag: 0
   m_GravityScale: 0
@@ -127,7 +127,7 @@ PolygonCollider2D:
   m_GameObject: {fileID: 7848861950214568389}
   m_Enabled: 1
   m_Density: 1
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 6200000, guid: 4f94e89e1d6547644ac63c083fdbf623, type: 2}
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
@@ -262,37 +262,6 @@ MonoBehaviour:
   - {x: 0.5, y: -0.5, z: 0}
   - {x: 0.5, y: 0.5, z: 0}
   - {x: -0.5, y: 0.5, z: 0}
---- !u!114 &6312119704428186747
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7848861950214568389}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe131e51b579cc944816e7e4897b962d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  health: {fileID: 0}
-  iDie: {fileID: 0}
-  minSpeedForImpactDamage: 0
-  extraSpeedDamageMultiplier: 0
---- !u!114 &3121479986386037500
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7848861950214568389}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7d18cfde2a2cfa24881bf0659a64883b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  rb: {fileID: 0}
-  impactBaseDamage: 2
-  damageInterval: 60
 --- !u!114 &3208097671186514075
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -326,7 +295,13 @@ MonoBehaviour:
     rarity: 1
     tags: 03000000
   spawnPool: 0
-  isWaitingInQueue: 1
+  isWaitingInPool: 1
+  ActivateInPoolEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  WaitInPoolEvent:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &7288841364044309893
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -339,13 +314,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ae1ba04bbe2e7ae448d132d45d217509, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rb: {fileID: 0}
-  maxDirection: {x: 1, y: 1}
-  minDirection: {x: -1, y: -1}
-  maxVelocity: 1000
-  minVelocity: 800
-  maxRotation: 150
-  minRotation: 100
+  momentum: 0
+  parentVelocity: {x: 0, y: 0}
+  angleRange:
+    max: 359
+    min: 0
+  velocityRange:
+    max: 0.25
+    min: 0.25
+  rotationRange:
+    max: 0
+    min: 0
 --- !u!114 &7288841364044309892
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -358,8 +337,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ce3b27a5acca699478a3a911a9025299, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxVelocity: 1000
-  maxRotation: 200
+  maxVelocity: 10
+  maxRotation: 5
 --- !u!114 &-7067012531383671024
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -399,6 +378,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 673f555ac3c31e74a86b0edcd4b06efd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  diesAt: 0
 --- !u!114 &80272590631800220
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -413,9 +393,39 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   actorSpawnSettings:
   - spawnEvent: 5
+    momentum: 1
     startDelay: 0
     delayAfterSpawn: 0
     iterations: 0
     numberToSpawn: 02000000
     actors:
     - {fileID: 7793139523681048022, guid: ee8c9e628d8122c41bf126273a3a3f1e, type: 3}
+--- !u!114 &2782789494380755379
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7848861950214568389}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2daa7eec67e3f0e47b5a5fade585c19d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rb: {fileID: 0}
+  damage: 2
+  interval: 1
+--- !u!114 &2789380747663269391
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7848861950214568389}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9882a847fb8ee014c9c4444957cd467c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rb: {fileID: 0}
+  rate: 0.1

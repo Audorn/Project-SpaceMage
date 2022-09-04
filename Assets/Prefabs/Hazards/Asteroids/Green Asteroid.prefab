@@ -13,8 +13,6 @@ GameObject:
   - component: {fileID: 5670359823722627748}
   - component: {fileID: 7029051290372623506}
   - component: {fileID: 1069569787}
-  - component: {fileID: 3656375305786282320}
-  - component: {fileID: 5653868113948489687}
   - component: {fileID: 5305901510442212784}
   - component: {fileID: -8574324270919218947}
   - component: {fileID: 818002094}
@@ -22,6 +20,7 @@ GameObject:
   - component: {fileID: -1857362016972279333}
   - component: {fileID: 8535036983906844371}
   - component: {fileID: 2367530177510079978}
+  - component: {fileID: 1419449975867708306}
   m_Layer: 0
   m_Name: Green Asteroid
   m_TagString: Untagged
@@ -126,7 +125,7 @@ PolygonCollider2D:
   m_GameObject: {fileID: 705913685081007342}
   m_Enabled: 1
   m_Density: 1
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 6200000, guid: 4f94e89e1d6547644ac63c083fdbf623, type: 2}
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
@@ -261,37 +260,6 @@ MonoBehaviour:
   - {x: 0.5, y: -0.5, z: 0}
   - {x: 0.5, y: 0.5, z: 0}
   - {x: -0.5, y: 0.5, z: 0}
---- !u!114 &3656375305786282320
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 705913685081007342}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe131e51b579cc944816e7e4897b962d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  health: {fileID: 0}
-  iDie: {fileID: 0}
-  minSpeedForImpactDamage: 0
-  extraSpeedDamageMultiplier: 0
---- !u!114 &5653868113948489687
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 705913685081007342}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7d18cfde2a2cfa24881bf0659a64883b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  rb: {fileID: 0}
-  impactBaseDamage: 2
-  damageInterval: 60
 --- !u!114 &5305901510442212784
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -318,13 +286,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f47e61c1bef32ff4cb3a48b9c976d204, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rb: {fileID: 0}
   filterData:
     prefabId: GreenAsteroid
     faction: 8
     threatLevel: 2
     rarity: 1
     tags: 00000000
+  spawnPool: 0
+  isWaitingInPool: 1
+  ActivateInPoolEvent:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &818002094
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -337,13 +309,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ae1ba04bbe2e7ae448d132d45d217509, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rb: {fileID: 0}
-  maxDirection: {x: 1, y: 1}
-  minDirection: {x: -1, y: -1}
-  maxVelocity: 1000
-  minVelocity: 600
-  maxRotation: 200
-  minRotation: 100
+  angleRange:
+    max: 359
+    min: 0
+  velocityRange:
+    max: 5
+    min: 5
+  rotationRange:
+    max: 12
+    min: 3
 --- !u!114 &818002095
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -397,4 +371,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 673f555ac3c31e74a86b0edcd4b06efd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isWaitingInQueue: 1
+  diesAt: 0
+--- !u!114 &1419449975867708306
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 705913685081007342}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2daa7eec67e3f0e47b5a5fade585c19d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rb: {fileID: 0}
+  damage: 2
+  interval: 1

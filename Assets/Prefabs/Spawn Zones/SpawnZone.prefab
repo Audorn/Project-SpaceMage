@@ -88,10 +88,17 @@ MonoBehaviour:
   isActive: 0
   area: {x: 4, y: 4}
   maxTries: 5
-  overridePrefabSpawnMotion: 1
-  maxDirection: {x: 1, y: 1}
-  minDirection: {x: -1, y: -1}
+  overridePrefabSpawnMotion: 0
+  angleRange:
+    max: 0
+    min: 0
+  velocityRange:
+    max: 1
+    min: 1
   velocityModifier: 1
+  rotationRange:
+    max: 1
+    min: 1
   rotationModifier: 1
   spawnSettings:
   - uniqueId: 
@@ -101,7 +108,19 @@ MonoBehaviour:
       faction: 8
       threatLevel: 2
       rarity: 1
-      tags: 03000000
+      tags: 0300000002000000
+    numberToGet: 1
+    spawnDelay: 1
+    spawnDelayMultiplier: 1
+    isEachUnique: 0
+  - uniqueId: 
+    catalog: 1
+    filterData:
+      prefabId: GreenAsteroid
+      faction: 0
+      threatLevel: 0
+      rarity: 0
+      tags: 00000000
     numberToGet: 1
     spawnDelay: 1
     spawnDelayMultiplier: 1

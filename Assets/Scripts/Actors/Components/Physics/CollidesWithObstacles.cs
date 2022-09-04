@@ -21,14 +21,6 @@ namespace SpaceMage.Entities
             calculateObstacleFaceImpacted();
 
             Magical magical = GetComponentInParent<Magical>();
-            // Obstacle is neither permeable nor a warper to this actor - reflect the velocity.
-            if ((!obstacle.IsPermeable && magical == null) || (magical && !obstacle.IsPermeableToMagic) ||
-                (!obstacle.IsWarper && magical == null) || (magical && !obstacle.IsWarperToMagic))
-            {
-                Vector2 cardinalImpactNormal = (obstacleFaceImpacted == Direction.NORTH || obstacleFaceImpacted == Direction.SOUTH) ? Vector2.up : Vector2.right;
-                if (rb)
-                    rb.velocity = Vector2.Reflect(velocityLastFrame, cardinalImpactNormal);
-            }
 
             // Obstacle is permeable to this actor - warp through it.
             if ((obstacle.IsPermeable && magical == null) || (magical && obstacle.IsPermeableToMagic))

@@ -14,11 +14,10 @@ GameObject:
   - component: {fileID: -2334013680017722951}
   - component: {fileID: 1078073906578297604}
   - component: {fileID: 1619362857742308093}
-  - component: {fileID: -1135386249544921753}
-  - component: {fileID: -5918430909458941169}
   - component: {fileID: 2512230541074779728}
   - component: {fileID: 2940475852170911854}
   - component: {fileID: 809780777124100533}
+  - component: {fileID: 3290248817623013474}
   m_Layer: 0
   m_Name: Default Ship
   m_TagString: Untagged
@@ -110,6 +109,7 @@ MonoBehaviour:
     faction: 1
     threatLevel: 2
     rarity: 2
+    tags: 
   baseManeuverability: 25
   baseStopSpinningRate: 0.1
   engine: {fileID: 2208123816146251860, guid: 9606f48144b92e841965d2f6665f4899, type: 3}
@@ -122,7 +122,7 @@ PolygonCollider2D:
   m_GameObject: {fileID: 1481393552804321905}
   m_Enabled: 1
   m_Density: 1
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 6200000, guid: 4f94e89e1d6547644ac63c083fdbf623, type: 2}
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
@@ -266,37 +266,6 @@ MonoBehaviour:
   blendDistance: 0
   weight: 1
   sharedProfile: {fileID: 11400000, guid: d5bf964bc1b62774aaff9a90425152dc, type: 2}
---- !u!114 &-1135386249544921753
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1481393552804321905}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe131e51b579cc944816e7e4897b962d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  health: {fileID: 0}
-  iDie: {fileID: 0}
-  minSpeedForImpactDamage: 3
-  extraSpeedDamageMultiplier: 0.15
---- !u!114 &-5918430909458941169
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1481393552804321905}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7d18cfde2a2cfa24881bf0659a64883b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  rb: {fileID: 0}
-  impactBaseDamage: 2
-  damageInterval: 60
 --- !u!114 &2512230541074779728
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -335,3 +304,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f8fa42db4c0ce5147acb0508a974d89e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  velocityLastFrame: {x: 0, y: 0}
+  angularVelocityLastFrame: 0
+  obstacleFaceImpacted: 0
+--- !u!114 &3290248817623013474
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1481393552804321905}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2daa7eec67e3f0e47b5a5fade585c19d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rb: {fileID: 0}
+  damage: 10
+  interval: 1

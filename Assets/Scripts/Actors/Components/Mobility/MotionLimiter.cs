@@ -21,7 +21,7 @@ namespace SpaceMage.Entities
 
             if (rb.angularVelocity > maxRotation)
                 rb.angularVelocity = maxRotation;
-            else if (rb.angularVelocity < 0)
+            else if (rb.angularVelocity < -maxRotation)
                 rb.angularVelocity = -maxRotation;
         }
 

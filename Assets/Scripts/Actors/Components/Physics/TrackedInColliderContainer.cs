@@ -28,10 +28,19 @@ namespace SpaceMage.Entities
             trackedByContainers.Remove(container);
         }
 
-        private void OnDestroy()
+        private void deregisterFromTrackingContainers()
         {
             foreach (ColliderContainer container in trackedByContainers)
                 container.Remove(GetComponent<Collider2D>());
+        }
+
+        private void OnDestroy() { deregisterFromTrackingContainers(); }
+
+        private void Start()
+        {
+            Actor actor = GetComponent<Actor>();
+            if (actor)
+                actor.WaitInPoolEvent.AddListener(deregisterFromTrackingContainers);
         }
     }
 }

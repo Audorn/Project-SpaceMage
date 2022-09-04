@@ -241,6 +241,7 @@ GameObject:
   - component: {fileID: 8915404431363497725}
   - component: {fileID: 8021540341109616756}
   - component: {fileID: 1718577562}
+  - component: {fileID: 1685571243031906964}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -332,7 +333,7 @@ Rigidbody2D:
   m_UseAutoMass: 0
   m_Mass: 1
   m_LinearDrag: 0
-  m_AngularDrag: 0.05
+  m_AngularDrag: 1
   m_GravityScale: 0
   m_Material: {fileID: 6200000, guid: 4f94e89e1d6547644ac63c083fdbf623, type: 2}
   m_Interpolate: 1
@@ -500,7 +501,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 75930e04e88098e4eb83fbb8d697053e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rb: {fileID: 0}
+  filterData:
+    prefabId: 
+    faction: 0
+    threatLevel: 0
+    rarity: 0
+    tags: 
+  spawnPool: 0
+  isWaitingInPool: 1
+  ActivateInPoolEvent:
+    m_PersistentCalls:
+      m_Calls: []
   iStopSpinning: {fileID: 0}
   ship: {fileID: 0}
 --- !u!114 &1718577562
@@ -519,6 +530,20 @@ MonoBehaviour:
   isTethered: 1
   maxDistance: {x: 0, y: 0}
   followSpeed: 5
+--- !u!114 &1685571243031906964
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8915404431363497726}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 577210591ec354f4b8a8f18538aab14b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  max: 0
+  current: 0
 --- !u!1 &8915404431363543191
 GameObject:
   m_ObjectHideFlags: 0

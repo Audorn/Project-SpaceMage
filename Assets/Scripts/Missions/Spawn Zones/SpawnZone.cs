@@ -41,9 +41,10 @@ namespace SpaceMage.Missions
         [SerializeField] private Vector2 area;
         [SerializeField] private int maxTries = 5;
         [SerializeField] private bool overridePrefabSpawnMotion;
-        [SerializeField] private Vector2 maxDirection;
-        [SerializeField] private Vector2 minDirection;
+        [SerializeField] private AngleRange angleRange;
+        [SerializeField] private VelocityRange velocityRange;
         [SerializeField] private float velocityModifier;
+        [SerializeField] private RotationRange rotationRange;
         [SerializeField] private float rotationModifier;
         [SerializeField] private List<SpawnSettings> spawnSettings;
         public Vector2 Area { get { return area; } }
@@ -86,11 +87,12 @@ namespace SpaceMage.Missions
         {
             for (int i = 0; i < numberOfSpawnSettings; i++)
             {
+                // Early out - This setting is already busy spawning.
                 if (spawnSettings[i].IsSpawning)
                     continue;
 
                 if (spawnSettings[i].Catalog == Catalog.HAZARD)
-                    StartCoroutine(spawnHazards(spawnSettings[i].SpawnDelay, spawnSettings[i]));
+                    StartCoroutine(spawnHazards(spawnSettings[i]));
 
                 // TODO: Spawn from other catalogs.
 
@@ -99,8 +101,9 @@ namespace SpaceMage.Missions
         }
 
         private ColliderContainer trackedColliders;
-        private IEnumerator spawnHazards(float spawnDelay, SpawnSettings spawnSettings)
+        private IEnumerator spawnHazards(SpawnSettings spawnSettings)
         {
+            float spawnDelay = spawnSettings.SpawnDelay;
             List<Hazard> hazards = HazardCatalog.GetHazards(spawnSettings);
 
             spawnSettings.ToggleSpawning(true);
@@ -118,16 +121,15 @@ namespace SpaceMage.Missions
                     float y = Random.Range(transform.position.y + spriteDimensionsHalved.y, maxY - spriteDimensionsHalved.y);
                     Vector2 possiblePosition = new Vector2(x, y);
 
+                    // Early out - no other colliders are in this spawn zone.
                     if (trackedColliders.Colliders.Count == 0)
                     {
                         position = possiblePosition;
                         break;
                     }
 
-                    // Other objects are present. Find the center of this one and then see if it overlaps any of them.
                     Vector2 center = new Vector2(x + spriteDimensionsHalved.x, y + spriteDimensionsHalved.y);
 
-                    // Make sure that hazards do not spawn in overlapping other objects.
                     bool isValidPosition = true;
                     foreach (Collider2D collider in trackedColliders.Colliders)
                     {
@@ -141,11 +143,17 @@ namespace SpaceMage.Missions
                         Vector2 requiredDistance = new Vector2(spriteDimensionsHalved.x + trackedDimensionsHalved.x, spriteDimensionsHalved.y + trackedDimensionsHalved.y);
 
                         if (distance.x < requiredDistance.x || distance.y < requiredDistance.y)
+                        {
                             isValidPosition = false;
+                            break;
+                        }
                     }
 
                     if (isValidPosition)
+                    {
                         position = possiblePosition;
+                        break; // Found a valid position without overlap.
+                    }
                 }
 
                 // A valid position was found, create the new object.
@@ -159,16 +167,17 @@ namespace SpaceMage.Missions
 
                         if (spawnWithMotion)
                         {
-                            spawnWithMotion.SetMinDirection(minDirection);
-                            spawnWithMotion.SetMaxDirection(maxDirection);
-                            spawnWithMotion.ModifyVelocity(velocityModifier);
-                            spawnWithMotion.ModifyRotation(rotationModifier);
+                            spawnWithMotion.SetAngleRange(angleRange);
+                            spawnWithMotion.SetVelocityRange(velocityRange);
+                            spawnWithMotion.SetRotationRange(rotationRange);
+                            spawnWithMotion.ResetVelocity();
                         }
                     }
                 }
 
                 yield return new WaitForSeconds(spawnDelay);
             }
+
             spawnSettings.ToggleSpawning(false);
         }
 

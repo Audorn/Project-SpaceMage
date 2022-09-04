@@ -20,11 +20,11 @@ namespace SpaceMage.Entities
         [SerializeField] private ActorPool tertiary;
         [SerializeField] private ActorPool quaternary;
 
-        public static Actor Instantiate(Actor actorPrefab, Transform transform, SpawnPool spawnPool = SpawnPool.PRIMARY)
+        public static Actor Instantiate(Vector2 parentVelocity, Actor actorPrefab, Transform transform, Momentum momentum = Momentum.OVERRIDE, SpawnPool spawnPool = SpawnPool.PRIMARY)
         {
-            return Instantiate(actorPrefab, transform.position, transform.rotation, spawnPool);
+            return Instantiate(parentVelocity, actorPrefab, transform.position, transform.rotation, momentum, spawnPool);
         }
-        public static Actor Instantiate(Actor actorPrefab, Vector3 position, Quaternion quaternion, SpawnPool spawnPool = SpawnPool.PRIMARY)
+        public static Actor Instantiate(Vector2 parentVelocity, Actor actorPrefab, Vector3 position, Quaternion quaternion, Momentum momentum, SpawnPool spawnPool = SpawnPool.PRIMARY)
         {
 
             bool isOkToInstantiate = false;
@@ -42,6 +42,12 @@ namespace SpaceMage.Entities
 
                 Actor actor = GameObject.Instantiate(actorPrefab, position, quaternion);
                 actor.SetSpawnPool(spawnPool);
+                SpawnWithMotion spawnWithMotion = actor.GetComponent<SpawnWithMotion>();
+                if (spawnWithMotion)
+                    spawnWithMotion.SetMomentum(momentum);
+
+                Debug.LogWarning($"Parent rigid body velocity {parentVelocity}");
+                spawnWithMotion.RecordParentVelocity(parentVelocity);
 
                 if (spawnPool == SpawnPool.PRIMARY) _.primary.Add(actor);
                 else if (spawnPool == SpawnPool.SECONDARY) _.secondary.Add(actor);
@@ -52,7 +58,7 @@ namespace SpaceMage.Entities
             }
 
             // Waiting Actor found.
-            actorInPool.ActivateInQueue(position, quaternion);
+            actorInPool.ActivateInPool(position, quaternion);
             return actorInPool;
         }
     }

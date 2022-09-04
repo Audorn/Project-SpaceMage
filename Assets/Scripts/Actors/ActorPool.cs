@@ -22,7 +22,7 @@ namespace SpaceMage.Entities
             int numberOfActors = actors.Count;
             for (int i = 0; i < numberOfActors; i++)
             {
-                if (actors[i].FilterData.PrefabId == prefabId && actors[i].IsWaitingInQueue)
+                if (actors[i].FilterData.PrefabId == prefabId && actors[i].IsWaitingInPool)
                     return actors[i];
             }
 

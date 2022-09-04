@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace SpaceMage.Entities
 {
@@ -9,17 +10,21 @@ namespace SpaceMage.Entities
     public class Actor : MonoBehaviour
     {
         protected Rigidbody2D rb;
+
         [SerializeField] protected CatalogFilterData filterData;
         [SerializeField] protected SpawnPool spawnPool;
-        [SerializeField] protected bool isWaitingInQueue = true;
+        [SerializeField] protected bool isWaitingInPool = true;
 
-        public CatalogFilterData FilterData { get { return filterData; } }
-        public SpawnPool SpawnPool { get { return spawnPool; } }
-        public bool IsWaitingInQueue { get { return isWaitingInQueue; } }
+        public UnityEvent ActivateInPoolEvent = new UnityEvent();
+        public UnityEvent WaitInPoolEvent = new UnityEvent();
 
-        public void SetSpawnPool(SpawnPool spawnPool) { this.spawnPool = spawnPool; }
+        public CatalogFilterData FilterData => filterData;
+        public SpawnPool SpawnPool => spawnPool;
+        public bool IsWaitingInPool => isWaitingInPool;
 
-        public Actor ActivateInQueue(Vector3 position, Quaternion quaternion)
+        public void SetSpawnPool(SpawnPool spawnPool) => this.spawnPool = spawnPool;
+
+        public Actor ActivateInPool(Vector3 position, Quaternion quaternion)
         {
             GetComponent<Health>().Fill();
             Rigidbody2D rb = GetComponent<Rigidbody2D>();
@@ -28,15 +33,17 @@ namespace SpaceMage.Entities
             transform.position = position;
             transform.rotation = quaternion;
             gameObject.SetActive(true);
-            isWaitingInQueue = false;
+            isWaitingInPool = false;
+            ActivateInPoolEvent.Invoke();
 
             return this;
         }
 
-        public void WaitInQueue()
+        public void WaitInPool()
         {
+            isWaitingInPool = true;
+            WaitInPoolEvent.Invoke();
             gameObject.SetActive(false);
-            isWaitingInQueue = true;
         }
 
         protected virtual void Start() { rb = GetComponent<Rigidbody2D>(); }

@@ -50,6 +50,7 @@ MonoBehaviour:
     faction: 4
     threatLevel: 3
     rarity: 3
+    tags: 
 --- !u!1 &2893668057269731871
 GameObject:
   m_ObjectHideFlags: 0
@@ -63,15 +64,14 @@ GameObject:
   - component: {fileID: 8021646726043558997}
   - component: {fileID: 4643074798338665059}
   - component: {fileID: 2441996658790264842}
-  - component: {fileID: 1395477008112482209}
-  - component: {fileID: 4577670710369439783}
-  - component: {fileID: 8040372420888793382}
   - component: {fileID: 7512547655919074113}
   - component: {fileID: 2946012235366641164}
   - component: {fileID: 9112986028298730571}
   - component: {fileID: 9112986028298730570}
   - component: {fileID: 428106144633078880}
   - component: {fileID: 8394047531187613587}
+  - component: {fileID: 1489397618571945207}
+  - component: {fileID: 5250185615997149314}
   m_Layer: 0
   m_Name: Big Rock
   m_TagString: Untagged
@@ -176,7 +176,7 @@ PolygonCollider2D:
   m_GameObject: {fileID: 2893668057269731871}
   m_Enabled: 1
   m_Density: 1
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 6200000, guid: d92e766f9b72298449109e0afbbaba64, type: 2}
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
@@ -311,49 +311,6 @@ MonoBehaviour:
   - {x: 0.5, y: -0.5, z: 0}
   - {x: 0.5, y: 0.5, z: 0}
   - {x: -0.5, y: 0.5, z: 0}
---- !u!114 &1395477008112482209
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2893668057269731871}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe131e51b579cc944816e7e4897b962d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  health: {fileID: 0}
-  iDie: {fileID: 0}
-  minSpeedForImpactDamage: 10
-  extraSpeedDamageMultiplier: 0.1
---- !u!114 &4577670710369439783
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2893668057269731871}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2ef75847e9fb8594b8c6b2550f20df2f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &8040372420888793382
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2893668057269731871}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7d18cfde2a2cfa24881bf0659a64883b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  rb: {fileID: 0}
-  impactBaseDamage: 2
-  damageInterval: 60
 --- !u!114 &7512547655919074113
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -385,6 +342,9 @@ MonoBehaviour:
     faction: 4
     threatLevel: 2
     rarity: 3
+    tags: 
+  spawnPool: 0
+  isWaitingInPool: 1
 --- !u!114 &9112986028298730571
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -397,13 +357,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ae1ba04bbe2e7ae448d132d45d217509, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rb: {fileID: 0}
-  maxDirection: {x: 1, y: 1}
-  minDirection: {x: -1, y: -1}
-  maxVelocity: 10000
-  minVelocity: 1000
-  maxRotation: 10000
-  minRotation: 1000
+  angleRange:
+    max: 359
+    min: 0
+  velocityRange:
+    max: 0.5
+    min: 0
+  rotationRange:
+    max: 1
+    min: 1
 --- !u!114 &9112986028298730570
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -442,3 +404,34 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f8fa42db4c0ce5147acb0508a974d89e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  velocityLastFrame: {x: 0, y: 0}
+  angularVelocityLastFrame: 0
+  obstacleFaceImpacted: 0
+--- !u!114 &1489397618571945207
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2893668057269731871}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 673f555ac3c31e74a86b0edcd4b06efd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  diesAt: 0
+--- !u!114 &5250185615997149314
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2893668057269731871}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2daa7eec67e3f0e47b5a5fade585c19d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rb: {fileID: 0}
+  damage: 1
+  interval: 1

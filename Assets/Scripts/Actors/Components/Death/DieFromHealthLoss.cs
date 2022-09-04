@@ -5,7 +5,7 @@ using UnityEngine;
 namespace SpaceMage.Entities
 {
     /// <summary>
-    /// This gameobject dies.
+    /// This gameobject dies. If it is an actor, it will wait in its ActorPool instead.
     /// </summary>
     [RequireComponent(typeof(Health))]
     public class DieFromHealthLoss : MonoBehaviour
@@ -13,27 +13,31 @@ namespace SpaceMage.Entities
         private Actor actor;
         private Health health;
 
+        [SerializeField] private int diesAt = 0;
+        public int DiesAt { get { return diesAt; } }
+
         public virtual void Die()
         {
-            Debug.Log($"Destroying {gameObject.name}");
-
             if (actor)
             {
-                actor.WaitInQueue();
-                ActorSpawner spawner = GetComponent<ActorSpawner>();
+                Rigidbody2D rb = GetComponent<Rigidbody2D>();
+                Vector2 parentVelocity = new Vector2(rb.velocity.x, rb.velocity.y);
 
+                actor.WaitInPool();
+                ActorSpawner spawner = GetComponent<ActorSpawner>();
                 if (spawner)
-                    ActorSpawner.SpawnActors(spawner.ActorSpawnSettings, SpawnEvent.DEATH);
+                    ActorSpawner.SpawnActors(parentVelocity, spawner.ActorSpawnSettings, SpawnEvent.DEATH, spawner.PoolToSpawnIn);
 
                 return;
             }
 
+            Debug.Log($"Destroying {gameObject.name}");
             Destroy(gameObject);
         }
 
         private void FixedUpdate()
         {
-            if (health.Current <= 0)
+            if (health.Current <= diesAt)
                 Die();
         }
 
