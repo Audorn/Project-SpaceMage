@@ -57,7 +57,7 @@ namespace SpaceMage.Actors
             SetShipToDefault();
             iStopSpinning = GetComponent<TorqueRemover>();
             if (iStopSpinning && ship)
-                iStopSpinning.setRate(ship.StopSpinningRate);
+                iStopSpinning.setRate(ship.TorqueRemovalRate);
         }
     }
 }

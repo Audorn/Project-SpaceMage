@@ -1,19 +1,15 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
     <Style src="project://database/Assets/Scripts/UI/Ship/ShipEditor.uss?fileID=7433441132597879392&amp;guid=c43b57c6fde05424e8802566bc4211ad&amp;type=3#ShipEditor" />
-    <ui:GroupBox name="DetailsContainer" style="flex-direction: column; justify-content: space-between; background-color: rgba(0, 0, 0, 0.78);">
+    <ui:GroupBox name="DetailsContainer" class="margin-none" style="flex-direction: column; justify-content: flex-start; height: 100%; padding-left: 6px; padding-top: 10px; padding-bottom: 10px;">
         <ui:GroupBox style="width: 100%; margin-top: 0;">
             <ui:VisualElement name="ModelContainer" style="flex-direction: row; align-items: stretch;">
                 <ui:Label text="Model:" display-tooltip-when-elided="true" class="label-bold text-white" />
                 <ui:Label text="NBX-1 Noobie" display-tooltip-when-elided="true" name="Model" class="text-white" />
             </ui:VisualElement>
-            <ui:VisualElement class="divider" style="width: auto; margin-top: 5px; margin-bottom: 5px; margin-right: 50px; border-bottom-width: 1px; border-left-color: rgba(255, 255, 255, 255); border-right-color: rgba(255, 255, 255, 255); border-top-color: rgba(255, 255, 255, 255); border-bottom-color: rgba(255, 255, 255, 255);" />
+            <ui:VisualElement class="divider" />
         </ui:GroupBox>
         <ui:GroupBox style="flex-direction: row; justify-content: space-between; margin-top: 0; padding-top: 0;">
             <ui:GroupBox name="LeftPanel" style="max-width: 250px; margin-top: 0; padding-top: 0;">
-                <ui:VisualElement name="SizeContainer" style="flex-direction: row; align-items: stretch;">
-                    <ui:Label text="Size:" display-tooltip-when-elided="true" class="label-bold text-white" />
-                    <ui:Label text="Small" display-tooltip-when-elided="true" name="Size" class="text-white" />
-                </ui:VisualElement>
                 <ui:VisualElement name="HullStrengthContainer" style="flex-direction: row; align-items: stretch;">
                     <ui:Label text="Hull Strength:" display-tooltip-when-elided="true" class="label-bold text-white" />
                     <ui:Label text="Medium (2 impacts)" display-tooltip-when-elided="true" name="HullStrength" class="text-white" />
@@ -24,23 +20,22 @@
                 </ui:VisualElement>
                 <ui:VisualElement name="SystemsContainer" style="flex-direction: row; align-items: stretch; flex-wrap: wrap;">
                     <ui:Label text="Systems:" display-tooltip-when-elided="true" class="label-bold text-white" />
-                    <ui:Label text="Emergency Shield," display-tooltip-when-elided="true" name="Maneuverability" class="text-white" />
-                    <ui:Label text="Emergency Shield" display-tooltip-when-elided="true" name="Maneuverability" class="text-white" style="flex-wrap: nowrap;" />
                 </ui:VisualElement>
             </ui:GroupBox>
             <ui:GroupBox name="RightPanel" style="min-width: auto; margin-top: 0; padding-top: 0; min-height: auto;">
-                <ui:VisualElement name="Image" style="background-image: url(&apos;project://database/Assets/Sprites/Ships.png?fileID=-91889342&amp;guid=a7304eca064762b4084ad8ff8004923d&amp;type=3#Default&apos;); width: 64px; height: 64px; max-width: none; max-height: none;" />
+                <ui:VisualElement name="ShipImage" style="background-image: url(&apos;project://database/Assets/Sprites/Ships.png?fileID=1874359336&amp;guid=a7304eca064762b4084ad8ff8004923d&amp;type=3#Default&apos;); width: 64px; height: 64px; max-width: none; max-height: none;" />
             </ui:GroupBox>
         </ui:GroupBox>
         <ui:GroupBox style="width: 100%; margin-top: 0;">
             <ui:VisualElement class="divider" style="width: auto;" />
         </ui:GroupBox>
         <ui:GroupBox style="margin-top: 0; padding-top: 0;">
-            <ui:VisualElement name="HardPointsContainer" style="flex-direction: row; align-items: stretch;">
-                <ui:GroupBox style="margin-top: 0; padding-top: 0; min-width: auto; min-height: auto; width: 100%;">
-                    <ui:Label text="Modules" display-tooltip-when-elided="true" class="label-bold text-white" />
-                    <ui:ListView focusable="true" horizontal-scrolling="true" show-foldout-header="false" fixed-item-height="0" virtualization-method="DynamicHeight" />
+            <ui:VisualElement name="HardPointsContainer" style="flex-direction: column; align-items: stretch;">
+                <ui:GroupBox style="margin-top: 0; padding-top: 0; min-width: auto; min-height: auto; width: 100%; flex-direction: row; justify-content: space-between; align-items: center; padding-right: 6px;">
+                    <ui:Label text="Hardpoints" display-tooltip-when-elided="true" class="label-bold text-white" />
+                    <ui:Button text="Inventory" display-tooltip-when-elided="true" class="outline-button" />
                 </ui:GroupBox>
+                <ui:GroupBox name="Hardpoints-Container" style="padding-right: 50px; flex-direction: row; justify-content: flex-start;" />
             </ui:VisualElement>
         </ui:GroupBox>
     </ui:GroupBox>

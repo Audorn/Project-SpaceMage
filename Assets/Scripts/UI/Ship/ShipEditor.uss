@@ -1,3 +1,11 @@
+:root {
+    --base-text-color: rgb(255, 255, 255);
+    --base-font-size: 20px;
+    background-color: rgba(0, 0, 0, 0.59);
+    background-image: none;
+    -unity-background-scale-mode: scale-to-fit;
+}
+
 Panel {
     font-size: 20px;
     -unity-font-style: bold;
@@ -10,7 +18,7 @@ Panel {
 
 .divider {
     border-bottom-width: 1px;
-    border-bottom-color: rgba(255, 255, 255, 255);
+    border-bottom-color: rgb(255, 255, 255);
     width: auto;
     padding-right: 0;
     margin-right: 50px;
@@ -18,9 +26,109 @@ Panel {
     margin-bottom: 5px;
 }
 
-.divider {
+.text-white {
+    color: var(--base-text-color);
 }
 
-.text-white {
+.margin-none {
+    margin-left: 0;
+    margin-right: 0;
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+.hardpoint-container {
+    color: rgb(255, 255, 255);
+    border-left-color: rgba(255, 255, 255, 0.39);
+    border-right-color: rgba(255, 255, 255, 0.39);
+    border-top-color: rgba(255, 255, 255, 0.39);
+    border-bottom-color: rgba(255, 255, 255, 0.39);
+    border-left-width: 1px;
+    border-right-width: 1px;
+    border-top-width: 1px;
+    border-bottom-width: 1px;
+    padding-left: 2px;
+    padding-right: 2px;
+    width: 120px;
+    align-items: center;
+}
+
+.hardpoint-destroyed {
+    color: rgb(255, 0, 0);
+}
+
+.hardpoint-modules-container {
+    margin-left: 0;
+    margin-right: 0;
+    margin-top: 0;
+    margin-bottom: 10px;
+    padding-left: 0;
+    padding-right: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+    width: 100%;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: flex-start;
+}
+
+.hardpoint-module {
+    width: 32px;
+    height: 32px;
+}
+
+.hardpoint-spells-container {
+    margin-left: 0;
+    margin-right: 0;
+    margin-top: 0;
+    margin-bottom: 0;
+    padding-left: 0;
+    padding-right: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+    width: 100%;
+}
+
+.outline-button {
+    -unity-text-outline-width: 0;
+    -unity-text-outline-color: rgba(255, 255, 255, 255);
+    background-color: rgba(0, 0, 0, 0);
     color: rgba(255, 255, 255, 255);
+    border-left-color: rgba(255, 255, 255, 0.39);
+    border-right-color: rgba(255, 255, 255, 0.39);
+    border-top-color: rgba(255, 255, 255, 0.39);
+    border-bottom-color: rgba(255, 255, 255, 0.39);
+    border-left-width: 1px;
+    border-right-width: 1px;
+    border-top-width: 1px;
+    border-bottom-width: 1px;
+    transition-duration: 0.3s;
+    transition-timing-function: ease-in-out;
+    transition-property: all;
+    padding-left: 8px;
+    padding-right: 8px;
+    padding-top: 4px;
+    padding-bottom: 4px;
+}
+
+.hardpoint-image {
+    width: 64px;
+    height: 64px;
+    border-left-color: rgba(255, 255, 255, 0.39);
+    border-right-color: rgba(255, 255, 255, 0.39);
+    border-top-color: rgba(255, 255, 255, 0.39);
+    border-bottom-color: rgba(255, 255, 255, 0.39);
+    border-left-width: 1px;
+    border-right-width: 1px;
+    border-top-width: 1px;
+    border-bottom-width: 1px;
+    margin-bottom: 10px;
+}
+
+.hardpoint-spell {
+    width: 32px;
+    height: 32px;
 }

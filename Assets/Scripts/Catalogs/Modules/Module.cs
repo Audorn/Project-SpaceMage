@@ -7,13 +7,17 @@ namespace SpaceMage.Ships
     /// <summary>
     /// A module that can be activated and deactivated.
     /// </summary>
-    [System.Serializable]
-    public abstract class Module
+    public class Module : MonoBehaviour
     {
         [SerializeField] protected string moduleId;           // Editor configurable.
-        [SerializeField] protected string name;               // Editor configurable.
+        [SerializeField] protected string uiName;               // Editor configurable.
+        [SerializeField] protected Sprite sprite;             // Editor configurable.
 
-        public abstract void Activate();
-        public abstract void Deactivate();
+        public string ModuleId => moduleId;
+        public string UIName => uiName;
+        public Sprite Sprite => sprite;
+
+        public virtual void Activate() { }
+        public virtual void Deactivate() { }
     }
 }

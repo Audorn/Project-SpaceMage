@@ -1,16 +1,16 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using SpaceMage.Ships;
 
 namespace SpaceMage.Actors
 {
     /// <summary>
-    /// Reduce rigidbody angular velocity to zero over time.
+    /// Reduce rigidbody angular velocity to zero over time. Rate is overridden by Ship objects.
     /// </summary>
-    [RequireComponent(typeof(Rigidbody2D))]
     public class TorqueRemover : MonoBehaviour
     {
-        private Rigidbody2D rb;                             // Assigned in Awake().
+        private Rigidbody2D rb;                             // Assigned in Start().
 
         [SerializeField] private float rate;                // Editor configurable.
 
@@ -29,6 +29,6 @@ namespace SpaceMage.Actors
                 rb.angularVelocity = Mathf.Clamp(angularVelocity + rate, angularVelocity, 0);
         }
 
-        private void Start() => rb = GetComponent<Rigidbody2D>();
+        private void Start() => rb = GetComponentInParent<Rigidbody2D>();
     }
 }

@@ -156,4 +156,12 @@ namespace SpaceMage
         MEDIUM,
         HEAVY
     }
+    
+    public enum HullStrength
+    {
+        POOR,
+        STANDARD,
+        REINFORCED,
+        ARMORED
+    }
 }
