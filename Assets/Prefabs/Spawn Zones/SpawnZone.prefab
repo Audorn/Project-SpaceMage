@@ -90,7 +90,7 @@ MonoBehaviour:
   maxTries: 5
   overridePrefabSpawnMotion: 0
   angleRange:
-    max: 0
+    max: 356
     min: 0
   velocityRange:
     max: 1

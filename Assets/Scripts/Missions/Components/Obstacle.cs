@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using SpaceMage.Entities;
+using SpaceMage.Actors;
 
 namespace SpaceMage.Missions
 {
@@ -15,9 +15,9 @@ namespace SpaceMage.Missions
         [SerializeField] private Direction warpInDirection;         // The direction that an actor will be warped out of this obstacle.
         [SerializeField] private float validWarpPercentage;         // How much of this object (along the face, from the center) is valid spawning area.
 
-        public bool IsWarper { get { return isWarper; } }
+        public bool Warps { get { return isWarper; } }
         public void SetIsWarper(bool value) { isWarper = value; }
-        public bool IsWarperToMagic { get { return isWarperToMagic; } }
+        public bool WarpsMagic { get { return isWarperToMagic; } }
         public void SetIsWarperToMagic(bool value) { isWarperToMagic = value; }
         public bool IsPermeable { get { return isPermeable; } }
         public void SetIsPermeable(bool value) { isPermeable = value; }

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Unity.Netcode;
 
-namespace SpaceMage.Entities
+namespace SpaceMage.Ships
 {
     /// <summary>
     /// A ship controlled by a player pilot. It is capable of taking damage and dying, and can deal damage on contact.

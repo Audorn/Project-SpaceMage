@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using SpaceMage.Entities;
+using SpaceMage.Actors;
 
 namespace SpaceMage
 {

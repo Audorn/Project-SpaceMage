@@ -83,10 +83,77 @@ namespace SpaceMage
         STATIONARY
     }
 
-    public enum Momentum
+    public enum HandleMomentum
     {
         OVERRIDE,
         RETAIN,
         AVERAGE
+    }
+
+    public enum MissionType
+    {
+        SURVIVAL,
+        DEFENSE,
+        EXPLORATION,
+        EXPERIMENT,
+        RECOVERY,
+        REPAIR
+    }
+
+    public enum MapSize
+    {
+        TINY,
+        SMALL,
+        MEDIUM,
+        LARGE,
+        MASSIVE
+    }
+
+    public enum PrimaryModifier
+    {
+        WAVES,
+        WAYPOINTS,
+        ALIEN_HIVE,
+        MAELSTROM,
+        DROUGHT,
+        ONE_WAY,
+        SPIRAL
+    }
+
+    public enum SecondaryModifier
+    {
+        BIG_MAP,
+        SMALL_MAP,
+        CORRIDOR,
+        BOSS,
+        HORDE,
+        CLUTTER,
+        ALLY_PRESENCE,
+        FACTION_PRESENCE,
+        WRAP,
+        SPLIT_MAP,
+        WARP,
+        NO_WEAPONS,
+        NO_EQUIPMENT,
+        NO_DEFENSES
+    }
+
+    public enum Objective
+    {
+        SURVIVE,
+        ESCORT,
+        DEFEND,
+        RESCUE,
+        EXPLORE,
+        SCAN,
+        DEAL_DAMAGE,
+        DESTROY_TARGET,
+    }
+
+    public enum HardpointRating
+    {
+        LIGHT,
+        MEDIUM,
+        HEAVY
     }
 }

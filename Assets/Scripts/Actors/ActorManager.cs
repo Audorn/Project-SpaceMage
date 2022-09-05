@@ -2,10 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace SpaceMage.Entities
+namespace SpaceMage.Actors
 {
     /// <summary>
-    /// Contains and handles ActorPools.
+    /// Tracks ActorPools and instantiates/activates Actors.
     /// </summary>
     public class ActorManager : MonoBehaviour
     {
@@ -15,16 +15,36 @@ namespace SpaceMage.Entities
         private void Awake() { _ = this; }
 
 
-        [SerializeField] private ActorPool primary;
-        [SerializeField] private ActorPool secondary;
-        [SerializeField] private ActorPool tertiary;
-        [SerializeField] private ActorPool quaternary;
+        [SerializeField] private ActorPool primary;             // Editor configurable.
+        [SerializeField] private ActorPool secondary;           // Editor configurable.
+        [SerializeField] private ActorPool tertiary;            // Editor configurable.
+        [SerializeField] private ActorPool quaternary;          // Editor configurable.
 
-        public static Actor Instantiate(Vector2 parentVelocity, Actor actorPrefab, Transform transform, Momentum momentum = Momentum.OVERRIDE, SpawnPool spawnPool = SpawnPool.PRIMARY)
+        /// <summary>
+        /// Activates a valid actor waiting in the correct pool, or instantiates a new one if possible.
+        /// </summary>
+        /// <param name="parentVelocity">The velocity of the parent at the moment of spawning.</param>
+        /// <param name="actorPrefab">The actor to be spawned.</param>
+        /// <param name="transform">The transform of the parent at the moemnt of spawning.</param>
+        /// <param name="momentum">How the child will use the parent velocity and its own generated velocity.</param>
+        /// <param name="spawnPool">The spawn pool this child should exist in.</param>
+        /// <returns>The activated or new actor.</returns>
+        public static Actor Instantiate(Vector2 parentVelocity, Actor actorPrefab, Transform transform, HandleMomentum momentum = HandleMomentum.OVERRIDE, SpawnPool spawnPool = SpawnPool.PRIMARY)
         {
             return Instantiate(parentVelocity, actorPrefab, transform.position, transform.rotation, momentum, spawnPool);
         }
-        public static Actor Instantiate(Vector2 parentVelocity, Actor actorPrefab, Vector3 position, Quaternion quaternion, Momentum momentum, SpawnPool spawnPool = SpawnPool.PRIMARY)
+
+        /// <summary>
+        /// Activates a valid actor waiting in the correct pool, or instantiates a new one if possible.
+        /// </summary>
+        /// <param name="parentVelocity">The velocity of the parent at the moment of spawning.</param>
+        /// <param name="actorPrefab">The actor to be spawned.</param>
+        /// <param name="position">The position to be spawned at.</param>
+        /// <param name="quaternion">The rotation to be spawned at.</param>
+        /// <param name="momentum">How the child will use the parent velocity and its own generated velocity.</param>
+        /// <param name="spawnPool">The spawn pool this child should exist in.</param>
+        /// <returns>The activated or new actor.</returns>
+        public static Actor Instantiate(Vector2 parentVelocity, Actor actorPrefab, Vector3 position, Quaternion quaternion, HandleMomentum momentum, SpawnPool spawnPool = SpawnPool.PRIMARY)
         {
 
             bool isOkToInstantiate = false;
@@ -44,9 +64,8 @@ namespace SpaceMage.Entities
                 actor.SetSpawnPool(spawnPool);
                 SpawnWithMotion spawnWithMotion = actor.GetComponent<SpawnWithMotion>();
                 if (spawnWithMotion)
-                    spawnWithMotion.SetMomentum(momentum);
+                    spawnWithMotion.SetHandleMomentum(momentum);
 
-                Debug.LogWarning($"Parent rigid body velocity {parentVelocity}");
                 spawnWithMotion.RecordParentVelocity(parentVelocity);
 
                 if (spawnPool == SpawnPool.PRIMARY) _.primary.Add(actor);

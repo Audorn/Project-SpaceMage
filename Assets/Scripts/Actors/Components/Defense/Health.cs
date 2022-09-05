@@ -2,36 +2,54 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace SpaceMage.Entities
+namespace SpaceMage.Actors
 {
+    /// <summary>
+    /// Manages the current and max health of an actor.
+    /// </summary>
+    [RequireComponent(typeof(Actor))]
     public class Health : MonoBehaviour
     {
-        [SerializeField] protected int max;
-        [SerializeField] protected int current;
+        private Actor actor;                                // Assigned in Awake().
 
-        public int Max { get { return max; } }
-        public int Current { get { return current; } }
-        public bool IsFull() { return max == current; }
+        [SerializeField] protected int max;                 // Editor configurable.
+        [SerializeField] protected int current;             // Editor configurable.
 
-        public void Fill() { current = max; }
-        public void SetHealth(int amount) { current = Mathf.Max(amount, max); }
+        public int Max => max;
+        public int Current => current;
+        public bool IsFull() => current >= max;
 
+        public void Fill() => current = max;
+        public void Set(int amount, bool allowOverFill = false) => current = (allowOverFill) ? Mathf.Max(0, amount) : Mathf.Clamp(amount, 0, max) ;
+
+        /// <summary>
+        /// Reduce health by an amount. Cannot be reduced below zero.
+        /// </summary>
+        /// <param name="amount">Cannot be negative.</param>
         public void Reduce(int amount)
         {
             // Early out - not allowed to gain health.
             if (amount < 1)
                 return;
 
-            current = Mathf.Max(0, current - amount);
+            Set(current - amount);
         }
 
-        public void Increase(int amount)
+        /// <summary>
+        /// Increase health by an amount.
+        /// </summary>
+        /// <param name="amount">Cannot be negative.</param>
+        /// <param name="allowOverFill">Optional: Can current health exceed max?</param>
+        public void Increase(int amount, bool allowOverFill = false)
         {
             // Early out - not allowed to lose health.
             if (amount < 1)
                 return;
 
-            current = Mathf.Min(max, current + amount);
+            Set(current + amount, allowOverFill);
         }
+
+        private void Start() => actor.ActivateInPoolEvent.AddListener(Fill);
+        private void Awake() => actor = GetComponent<Actor>();
     }
 }

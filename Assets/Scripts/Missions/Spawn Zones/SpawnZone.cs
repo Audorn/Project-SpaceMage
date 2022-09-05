@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 using SpaceMage.Catalogs;
-using SpaceMage.Entities;
+using SpaceMage.Actors;
 
 namespace SpaceMage.Missions
 {
@@ -170,7 +170,7 @@ namespace SpaceMage.Missions
                             spawnWithMotion.SetAngleRange(angleRange);
                             spawnWithMotion.SetVelocityRange(velocityRange);
                             spawnWithMotion.SetRotationRange(rotationRange);
-                            spawnWithMotion.ResetVelocity();
+                            spawnWithMotion.ImpartMotion();
                         }
                     }
                 }

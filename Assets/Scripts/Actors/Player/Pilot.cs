@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using Unity.Netcode;
 using SpaceMage.Catalogs;
+using SpaceMage.Ships;
 
-namespace SpaceMage.Entities
+namespace SpaceMage.Actors
 {
     public class Pilot : Actor
     {
@@ -17,6 +18,7 @@ namespace SpaceMage.Entities
         {
             ship = ShipCatalog.GetDefaultShip(transform.position, transform.rotation);
             ship.transform.parent = transform;
+            Player.SetPlayerShip(ship);
         }
 
         // Determine whether ship is accelerating or decelerating.
@@ -50,9 +52,8 @@ namespace SpaceMage.Entities
             rb.MoveRotation(rb.rotation + turnAmount * Time.fixedDeltaTime);
         }
 
-        protected override void Start()
+        protected void Start()
         {
-            base.Start();
             SetShipToDefault();
             iStopSpinning = GetComponent<TorqueRemover>();
             if (iStopSpinning && ship)

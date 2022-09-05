@@ -352,7 +352,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9882a847fb8ee014c9c4444957cd467c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rb: {fileID: 0}
   rate: 1
 --- !u!114 &8915404431363497724
 MonoBehaviour:
@@ -512,6 +511,9 @@ MonoBehaviour:
   ActivateInPoolEvent:
     m_PersistentCalls:
       m_Calls: []
+  WaitInPoolEvent:
+    m_PersistentCalls:
+      m_Calls: []
   iStopSpinning: {fileID: 0}
   ship: {fileID: 0}
 --- !u!114 &1718577562
@@ -526,7 +528,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7b36e720eaf26534d8cf8f3a73d68ab4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  camera: {fileID: 0}
+  targetCamera: {fileID: 0}
   isTethered: 1
   maxDistance: {x: 0, y: 0}
   followSpeed: 5

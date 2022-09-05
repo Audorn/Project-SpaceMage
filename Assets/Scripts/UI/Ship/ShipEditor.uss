@@ -1,0 +1,26 @@
+Panel {
+    font-size: 20px;
+    -unity-font-style: bold;
+    color: rgb(255, 255, 255);
+}
+
+.label-bold {
+    -unity-font-style: bold;
+}
+
+.divider {
+    border-bottom-width: 1px;
+    border-bottom-color: rgba(255, 255, 255, 255);
+    width: auto;
+    padding-right: 0;
+    margin-right: 50px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+.divider {
+}
+
+.text-white {
+    color: rgba(255, 255, 255, 255);
+}

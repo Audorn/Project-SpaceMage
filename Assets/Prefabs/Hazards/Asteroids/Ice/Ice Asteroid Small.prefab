@@ -22,6 +22,7 @@ GameObject:
   - component: {fileID: 6534180477359425638}
   - component: {fileID: 2782789494380755379}
   - component: {fileID: -4590081744749927845}
+  - component: {fileID: -6935112756192565071}
   m_Layer: 0
   m_Name: Ice Asteroid Small
   m_TagString: Untagged
@@ -313,14 +314,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ae1ba04bbe2e7ae448d132d45d217509, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  momentum: 0
-  parentVelocity: {x: 0, y: 0}
+  handleMomentum: 0
   angleRange:
     max: 359
     min: 0
   velocityRange:
-    max: 0.05
-    min: 0.05
+    max: 0.25
+    min: 0.25
   rotationRange:
     max: 0
     min: 0
@@ -336,8 +336,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ce3b27a5acca699478a3a911a9025299, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxVelocity: 10
-  maxRotation: 5
+  velocityRange:
+    max: 5
+    min: 1.5
+  rotationRange:
+    max: 5
+    min: 0
 --- !u!114 &-7067012531383671024
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -362,9 +366,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f8fa42db4c0ce5147acb0508a974d89e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  velocityLastFrame: {x: 0, y: 0}
-  angularVelocityLastFrame: 0
-  obstacleFaceImpacted: 0
 --- !u!114 &6534180477359425638
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -390,9 +391,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2daa7eec67e3f0e47b5a5fade585c19d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rb: {fileID: 0}
   damage: 1
-  interval: 1
+  intervalInFrames: 0
 --- !u!114 &-4590081744749927845
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -405,5 +405,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9882a847fb8ee014c9c4444957cd467c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rb: {fileID: 0}
   rate: 0.1
+--- !u!114 &-6935112756192565071
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7848861950214568389}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: de9097f0b3f781a4ba189f8118e00198, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
