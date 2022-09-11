@@ -10,6 +10,7 @@ namespace SpaceMage.Ships
     public class Hardpoint : MonoBehaviour
     {
         [SerializeField] private string id;
+        [SerializeField] private string description;
         [SerializeField] private HardpointRating baseHardpointRating;
         [SerializeField] private bool baseIsExternal = false;
         [SerializeField] private bool isDestroyed = false;
@@ -40,6 +41,7 @@ namespace SpaceMage.Ships
         public string Name => (isDestroyed) ? 
             "Destroyed " + hardpointRating.ToString() + ((isExternal) ? " External Hardpoint" : " Internal Hardpoint") : 
             hardpointRating.ToString() + ((isExternal) ? " External Hardpoint" : " Internal Hardpoint");
+        public string Description => description;
         public HardpointRating BaseHardpointRating => baseHardpointRating;
         public bool BaseIsExternal => baseIsExternal;
         public bool BaseIsTurret => baseIsTurret;

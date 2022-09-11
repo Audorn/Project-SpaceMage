@@ -9,11 +9,11 @@ namespace SpaceMage.Ships
     /// </summary>
     public class Module : MonoBehaviour
     {
-        [SerializeField] protected string moduleId;           // Editor configurable.
+        [SerializeField] protected string id;                   // Editor configurable.
         [SerializeField] protected string uiName;               // Editor configurable.
-        [SerializeField] protected Sprite sprite;             // Editor configurable.
+        [SerializeField] protected Sprite sprite;               // Editor configurable.
 
-        public string ModuleId => moduleId;
+        public string Id => id;
         public string UIName => uiName;
         public Sprite Sprite => sprite;
 

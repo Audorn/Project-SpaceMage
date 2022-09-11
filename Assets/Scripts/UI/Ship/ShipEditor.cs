@@ -12,8 +12,14 @@ namespace SpaceMage.UI {
         private Ship playerShip;
         private GroupBox hardpointsContainer;
         private List<GroupBox> hardpointContainers = new List<GroupBox>();
+        private List<VisualElement> hardpointImages = new List<VisualElement>();
         private List<VisualElement> moduleImages = new List<VisualElement>();
         private List<VisualElement> spellImages = new List<VisualElement>();
+
+        private GroupBox activeTooltipContainer;
+        private GroupBox activeTooltip;
+        private Label activeToolTipLabel;
+        private List<Hardpoint> hardpoints = new List<Hardpoint>();
 
         //[MenuItem("Window/UI Toolkit/ShipEditor")]
         private void OnEnable()
@@ -23,6 +29,16 @@ namespace SpaceMage.UI {
             var uiDocument = GetComponent<UIDocument>();
 
             hardpointsContainer = uiDocument.rootVisualElement.Q<GroupBox>(name: "Hardpoints-Container");
+
+            // Tooltips.
+            activeTooltipContainer = uiDocument.rootVisualElement.Q<GroupBox>(name: "ActiveTooltipContainer");
+            activeTooltipContainer.pickingMode = PickingMode.Ignore;
+            activeTooltip = new GroupBox();
+            activeTooltipContainer.Add(activeTooltip);
+            activeTooltip.name = "ActiveTooltip";
+            activeToolTipLabel = new Label();
+            activeTooltip.Add(activeToolTipLabel);
+            activeToolTipLabel.name = "ActiveTooltipLabel";
 
             var modelLabel = uiDocument.rootVisualElement.Q<Label>(name: "Model");
             var hullStrengthLabel = uiDocument.rootVisualElement.Q<Label>(name: "HullStrength");
@@ -47,17 +63,29 @@ namespace SpaceMage.UI {
 
         private void OnDisable()
         {
-            int numberOfHardpointContainers = hardpointContainers.Count;
-            for (int i = 0; i < numberOfHardpointContainers; i++)
-                hardpointContainers[i].UnregisterCallback<ClickEvent>(clickHardpoint);
+            int numberOfHardpointImages = hardpointImages.Count;
+            for (int i = 0; i < numberOfHardpointImages; i++)
+            {
+                hardpointImages[i].UnregisterCallback<ClickEvent>(clickHardpoint);
+                hardpointImages[i].UnregisterCallback<MouseOverEvent>(hoverHardpointOn);
+                hardpointImages[i].UnregisterCallback<MouseOutEvent>(hoverHardpointOff);
+            }
 
             int numberOfModuleImages = moduleImages.Count;
             for (int i = 0; i < numberOfModuleImages; i++)
+            {
                 moduleImages[i].UnregisterCallback<ClickEvent>(clickModule);
+                moduleImages[i].UnregisterCallback<MouseOverEvent>(hoverModuleOn);
+                moduleImages[i].UnregisterCallback<MouseOutEvent>(hoverModuleOff);
+            }
 
             int numberOfSpellImages = spellImages.Count;
             for (int i = 0; i < numberOfSpellImages; i++)
+            {
                 spellImages[i].UnregisterCallback<ClickEvent>(clickSpell);
+                spellImages[i].UnregisterCallback<MouseOverEvent>(hoverSpellOn);
+                spellImages[i].UnregisterCallback<MouseOutEvent>(hoverSpellOff);
+            }
         }
 
         private void populateHardpoints()
@@ -68,81 +96,102 @@ namespace SpaceMage.UI {
             int numberOfHardpoints = hardpoints.Count;
             for (int i = 0; i < numberOfHardpoints; i++)
             {
-                // Hardpoint Container.
+                // Hardpoint.
                 var hardpointContainer = new GroupBox();
-                hardpointContainer.AddToClassList("hardpoint-container");
-                if (hardpoints[i].IsDestroyed)
-                    hardpointContainer.AddToClassList("hardpoint-destroyed");
-
-                hardpointsContainer.Add(hardpointContainer); // Add to dom.
-                hardpointContainers.Add(hardpointContainer); // Add to list.
-                hardpointContainer.RegisterCallback<ClickEvent>(clickHardpoint);
-
-                // Hardpoint Label.
-                var nameLabel = new Label();
-                nameLabel.AddToClassList("hardpoint-name");
-                nameLabel.AddToClassList("label-bold");
-                nameLabel.text = hardpointNames[i];
-
-                hardpointContainer.Add(nameLabel);
-
-                // Hardpoint Image.
-                var hardpointSpriteRenderer = hardpoints[i].GetComponent<SpriteRenderer>();
-                Sprite hardpointSprite = hardpointSpriteRenderer.sprite;
-
-                var hardpointImage = new VisualElement();
-                hardpointImage.AddToClassList("hardpoint-image");
-                hardpointImage.style.backgroundImage = Background.FromSprite(hardpointSprite);
-
-                hardpointContainer.Add(hardpointImage);
-
-                // Modules Container.
-                var modulesContainer = new GroupBox();
-                modulesContainer.AddToClassList("hardpoint-modules-container");
-
-                hardpointContainer.Add(modulesContainer);
+                this.hardpoints.Add(hardpoints[i]);
+                createHardpointUI(hardpoints[i], hardpointNames[i], hardpointContainer);
 
                 // Modules.
-                int numberOfModules = hardpoints[i].NumberOfModules;
-                for (int j = 0; j < numberOfModules; j++)
-                {
-                    var moduleSprite = hardpoints[i].Modules[j].Sprite;
-                    var moduleImage = new VisualElement();
-                    moduleImage.AddToClassList("hardpoint-module");
-                    moduleImage.style.backgroundImage = Background.FromSprite(moduleSprite);
-
-                    modulesContainer.Add(moduleImage);
-                    moduleImages.Add(moduleImage);
-                    moduleImage.RegisterCallback<ClickEvent>(clickModule);
-                }
-
-                // Spells Container.
-                var spellsContainer = new GroupBox();
-                spellsContainer.AddToClassList("hardpoint-spells-container");
-
-                hardpointContainer.Add(spellsContainer);
+                var modulesContainer = new GroupBox();
+                hardpointContainer.Add(modulesContainer);
+                createModulesUI(hardpoints[i], modulesContainer);
 
                 // Spells.
-                int numberOfSpells = hardpoints[i].NumberOfSpells;
-                for (int j = 0; j < numberOfSpells; j++)
-                {
-                    var spellSprite = hardpoints[i].Spells[j].Sprite;
-                    var spellImage = new VisualElement();
-                    spellImage.AddToClassList("hardpoint-spell");
-                    spellImage.style.backgroundImage = Background.FromSprite(spellSprite);
-
-                    spellsContainer.Add(spellImage);
-                    spellImages.Add(spellImage);
-                    spellImage.RegisterCallback<ClickEvent>(clickSpell);
-                }
+                var spellsContainer = new GroupBox();
+                hardpointContainer.Add(spellsContainer);
+                createSpellsUI(hardpoints[i], spellsContainer);
             }
         }
 
+        private void createHardpointUI(Hardpoint hardpoint, string hardpointName, GroupBox hardpointContainer)
+        {
+            hardpointContainer.AddToClassList("hardpoint-container");
+            if (hardpoint.IsDestroyed)
+                hardpointContainer.AddToClassList("hardpoint-destroyed");
+
+            hardpointsContainer.Add(hardpointContainer); // Add to dom.
+            hardpointContainers.Add(hardpointContainer); // Add to list.
+
+            var nameLabel = new Label();
+            nameLabel.AddToClassList("hardpoint-name");
+            nameLabel.AddToClassList("label-bold");
+            nameLabel.text = hardpointName;
+
+            hardpointContainer.Add(nameLabel);
+
+            var hardpointSpriteRenderer = hardpoint.GetComponent<SpriteRenderer>();
+            Sprite hardpointSprite = hardpointSpriteRenderer.sprite;
+
+            var hardpointImage = new VisualElement();
+            hardpointImage.name = hardpointName;
+            hardpointImage.AddToClassList("hardpoint-image");
+            hardpointImage.style.backgroundImage = Background.FromSprite(hardpointSprite);
+
+            hardpointContainer.Add(hardpointImage);
+            hardpointImage.RegisterCallback<ClickEvent>(clickHardpoint);
+            hardpointImage.RegisterCallback<MouseOverEvent>(hoverHardpointOn);
+            hardpointImage.RegisterCallback<MouseOutEvent>(hoverHardpointOff);
+        }
+
+        private void createModulesUI(Hardpoint hardpoint, GroupBox modulesContainer)
+        {
+            modulesContainer.AddToClassList("hardpoint-modules-container");
+
+            int numberOfModules = hardpoint.NumberOfModules;
+            for (int j = 0; j < numberOfModules; j++)
+            {
+                var moduleSprite = hardpoint.Modules[j].Sprite;
+                var moduleImage = new VisualElement();
+                moduleImage.AddToClassList("hardpoint-module");
+                moduleImage.name = hardpoint.Modules[j].Id;
+                moduleImage.style.backgroundImage = Background.FromSprite(moduleSprite);
+
+                modulesContainer.Add(moduleImage);
+                moduleImages.Add(moduleImage);
+
+                moduleImage.RegisterCallback<ClickEvent>(clickModule);
+                moduleImage.RegisterCallback<MouseOverEvent>(hoverModuleOn);
+                moduleImage.RegisterCallback<MouseOutEvent>(hoverModuleOff);
+            }
+        }
+
+        private void createSpellsUI(Hardpoint hardpoint, GroupBox spellsContainer)
+        {
+            spellsContainer.AddToClassList("hardpoint-spells-container");
+
+            int numberOfSpells = hardpoint.NumberOfSpells;
+            for (int j = 0; j < numberOfSpells; j++)
+            {
+                var spellSprite = hardpoint.Spells[j].Sprite;
+                var spellImage = new VisualElement();
+                spellImage.AddToClassList("hardpoint-spell");
+                spellImage.name = hardpoint.Spells[j].Id;
+                spellImage.style.backgroundImage = Background.FromSprite(spellSprite);
+
+                spellsContainer.Add(spellImage);
+                spellImages.Add(spellImage);
+                spellImage.RegisterCallback<ClickEvent>(clickSpell);
+                spellImage.RegisterCallback<MouseOverEvent>(hoverSpellOn);
+                spellImage.RegisterCallback<MouseOutEvent>(hoverSpellOff);
+            }
+        }
+
+        // Clicks.
         private void clickHardpoint(ClickEvent clickEvent)
         {
-            var hardpointContainer = clickEvent.currentTarget as GroupBox;
+            var hardpointImage = clickEvent.currentTarget as VisualElement;
 
-            Debug.Log($"{hardpointContainer.name} (hardpoint) was clicked!");
+            Debug.Log($"{hardpointImage.name} (hardpoint image) was clicked!");
         }
 
         private void clickModule(ClickEvent clickEvent)
@@ -157,6 +206,67 @@ namespace SpaceMage.UI {
             var spellImage = clickEvent.currentTarget as VisualElement;
 
             Debug.Log($"{spellImage.name} (spell) was clicked!");
+        }
+
+        // Tooltips ON.
+        private void hoverHardpointOn(MouseOverEvent mouseOverEvent)
+        {
+            var hardpointImage = mouseOverEvent.currentTarget as VisualElement;
+            string hardpointName = hardpointImage.name;
+
+            Hardpoint hardpoint = null;
+            int numberOfHardpoints = playerShip.HardpointNames.Count;
+            for (int i = 0; i < numberOfHardpoints; i++)
+            {
+                if (playerShip.HardpointNames[i] == hardpointName)
+                {
+                    hardpoint = playerShip.Hardpoints[i];
+                    break;
+                }
+            }
+
+            if (!hardpoint)
+                return;
+
+            activeToolTipLabel.text = hardpoint.Description;
+            activeTooltip.style.visibility = Visibility.Visible;
+        }
+
+        private void hoverModuleOn(MouseOverEvent mouseOverEvent)
+        {
+            var moduleImage = mouseOverEvent.currentTarget as VisualElement;
+
+            Debug.Log($"{moduleImage.name} (module image) is hovered!");
+        }
+
+        private void hoverSpellOn(MouseOverEvent mouseOverEvent)
+        {
+            var spellImage = mouseOverEvent.currentTarget as VisualElement;
+
+            Debug.Log($"{spellImage.name} (spell image) is hovered!");
+        }
+
+        // Tooltips OFF.
+        private void hoverHardpointOff(MouseOutEvent mouseOverEvent)
+        {
+            //var hardpointImage = mouseOverEvent.currentTarget as VisualElement;
+            activeTooltip.style.visibility = Visibility.Hidden;
+
+            //Debug.Log($"{hardpointImage.name} (hardpoint image) is not hovered!");
+        }
+
+        private void hoverModuleOff(MouseOutEvent mouseOverEvent)
+        {
+            var moduleImage = mouseOverEvent.currentTarget as VisualElement;
+
+            Debug.Log($"{moduleImage.name} (module image) is not hovered!");
+        }
+
+        private void hoverSpellOff(MouseOutEvent mouseOverEvent)
+        {
+            var spellImage = mouseOverEvent.currentTarget as VisualElement;
+
+            Debug.Log($"{spellImage.name} (spell image) is not hovered!");
         }
 
     }

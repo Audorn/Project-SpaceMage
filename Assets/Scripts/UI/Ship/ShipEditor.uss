@@ -94,9 +94,9 @@ Panel {
 
 .outline-button {
     -unity-text-outline-width: 0;
-    -unity-text-outline-color: rgba(255, 255, 255, 255);
+    -unity-text-outline-color: rgb(255, 255, 255);
     background-color: rgba(0, 0, 0, 0);
-    color: rgba(255, 255, 255, 255);
+    color: rgb(255, 255, 255);
     border-left-color: rgba(255, 255, 255, 0.39);
     border-right-color: rgba(255, 255, 255, 0.39);
     border-top-color: rgba(255, 255, 255, 0.39);
@@ -131,4 +131,57 @@ Panel {
 .hardpoint-spell {
     width: 32px;
     height: 32px;
+}
+
+.padding-none {
+    padding-left: 0;
+    padding-right: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+}
+
+#ActiveTooltipContainer {
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    margin-left: 0;
+    margin-right: 0;
+    margin-top: 0;
+    margin-bottom: 0;
+    padding-left: 0;
+    padding-right: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+    display: flex;
+}
+
+#ActiveTooltip {
+    position: relative;
+    max-width: 300px;
+    background-color: rgba(20, 20, 20, 255);
+    border-left-width: 2px;
+    border-right-width: 2px;
+    border-top-width: 2px;
+    border-bottom-width: 2px;
+    border-left-color: rgba(100, 100, 100, 255);
+    border-right-color: rgba(100, 100, 100, 255);
+    border-top-color: rgba(100, 100, 100, 255);
+    border-bottom-color: rgba(100, 100, 100, 255);
+    margin-left: 5px;
+    margin-right: 5px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    padding-left: 5px;
+    padding-right: 5px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    visibility: hidden;
+}
+
+#ActiveTooltipLabel {
+    color: rgba(255, 255, 255, 255);
+    max-width: 300px;
+    white-space: normal;
 }

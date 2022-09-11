@@ -39,8 +39,8 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 1254962701279962336}
   - {fileID: 8495399309256768379}
+  - {fileID: 1254962701279962336}
   - {fileID: 891431084246255259}
   - {fileID: 7644034369495544746}
   m_Father: {fileID: 0}
@@ -426,6 +426,10 @@ PrefabInstance:
       value: 90
       objectReference: {fileID: 0}
     - target: {fileID: 2342559008713369502, guid: 7ee055fd3eb1ef543939b271a0637200, type: 3}
+      propertyPath: description
+      value: A small interior station for a system.
+      objectReference: {fileID: 0}
+    - target: {fileID: 2342559008713369502, guid: 7ee055fd3eb1ef543939b271a0637200, type: 3}
       propertyPath: spells.Array.size
       value: 2
       objectReference: {fileID: 0}
@@ -483,6 +487,10 @@ PrefabInstance:
       value: X-M-F
       objectReference: {fileID: 0}
     - target: {fileID: 2617723914709662955, guid: 81c866198aecc4c45ad8270dc37a49e7, type: 3}
+      propertyPath: description
+      value: A fixed mount designed for a moderately powerful ordinance.
+      objectReference: {fileID: 0}
+    - target: {fileID: 2617723914709662955, guid: 81c866198aecc4c45ad8270dc37a49e7, type: 3}
       propertyPath: spells.Array.size
       value: 2
       objectReference: {fileID: 0}
@@ -512,7 +520,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2617723914709662956, guid: 81c866198aecc4c45ad8270dc37a49e7, type: 3}
       propertyPath: m_RootOrder
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2617723914709662956, guid: 81c866198aecc4c45ad8270dc37a49e7, type: 3}
       propertyPath: m_LocalPosition.x
@@ -624,6 +632,10 @@ PrefabInstance:
       value: -90
       objectReference: {fileID: 0}
     - target: {fileID: 2342559008713369502, guid: 7ee055fd3eb1ef543939b271a0637200, type: 3}
+      propertyPath: description
+      value: A small interior station for a system.
+      objectReference: {fileID: 0}
+    - target: {fileID: 2342559008713369502, guid: 7ee055fd3eb1ef543939b271a0637200, type: 3}
       propertyPath: spells.Array.size
       value: 2
       objectReference: {fileID: 0}
@@ -682,7 +694,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1389169848939235641, guid: 1c9a3e4b9669fe24ebb0734e3fd37088, type: 3}
       propertyPath: m_RootOrder
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1389169848939235641, guid: 1c9a3e4b9669fe24ebb0734e3fd37088, type: 3}
       propertyPath: m_LocalPosition.x
