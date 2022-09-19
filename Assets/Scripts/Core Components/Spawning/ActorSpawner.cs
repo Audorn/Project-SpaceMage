@@ -87,8 +87,13 @@ namespace SpaceMage.Actors
             for (int i = 0; i < numberToSpawn; i++)
             {
                 // Holding Loop - waiting for a chance to spawn.
-                while (!isSpawning && safeToSpawn.Flag == false)
+                int maxFramesToHold = 60;
+                int framesHeld = 0;
+                while (!isSpawning && safeToSpawn.Flag == false && framesHeld < maxFramesToHold)
+                {
+                    framesHeld++;
                     yield return new WaitForFixedUpdate();
+                }
 
                 isSpawning = true;
                 safeToSpawn.SetFlag(false);

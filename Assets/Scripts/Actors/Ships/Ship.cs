@@ -24,7 +24,6 @@ namespace SpaceMage.Ships
         [SerializeField] private Engine engine;                                                 // Editor configurable.
 
         [SerializeField] private List<Hardpoint> hardpoints = new List<Hardpoint>();            // Editor configurable.
-        [SerializeField] private List<string> hardpointNames = new List<string>();              // Editor configurable.
         [SerializeField] private int maxHardpoints;                                             // Editor configurable.
 
         public string Model => model;
@@ -49,8 +48,6 @@ namespace SpaceMage.Ships
         }
 
         public List<Hardpoint> Hardpoints => hardpoints;
-        public List<string> HardpointNames => hardpointNames;
-        public void SetHardpointName(int index, string name) { if (hardpointNames.Count - 1 >= index) hardpointNames[index] = name; }
         public int MaxHardpoints => maxHardpoints;
         public void RemoveHardpoint(int index) => hardpoints.RemoveAt(index);
         public void RemoveHardpoint(string id) => hardpoints.Remove(hardpoints.Find(hardpoint => hardpoint.Id == id));
@@ -63,10 +60,17 @@ namespace SpaceMage.Ships
             hardpoints.Add(hardpoint);
         }
 
+        private void RefillAllAmmo()
+        {
+            int numberOfHardpoints = hardpoints.Count;
+            for (int i = 0; i < numberOfHardpoints; i++)
+                hardpoints[i].RefillAmmo();
+        }
+
         private void Start()
         {
             torqueRemover = GetComponent<TorqueRemover>();
-            //hardpoints = GetComponentsInChildren<Hardpoint>().ToList();
+            RefillAllAmmo();
         }
     }
 }

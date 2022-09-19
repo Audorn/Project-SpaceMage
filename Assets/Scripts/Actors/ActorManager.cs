@@ -11,8 +11,8 @@ namespace SpaceMage.Actors
     {
         // Singleton.
         private static ActorManager _;
-        public static ActorManager Singleton { get { return _; } }
-        private void Awake() { _ = this; }
+        public static ActorManager Singleton => _;
+        private void Awake() => _ = this;
 
 
         [SerializeField] private ActorPool primary;             // Editor configurable.

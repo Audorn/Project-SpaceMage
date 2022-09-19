@@ -125,10 +125,6 @@ MonoBehaviour:
   - {fileID: 1254962701279962343}
   - {fileID: 891431084246255260}
   - {fileID: 7644034369495544749}
-  hardpointNames:
-  - Main Gun
-  - Support One
-  - Support Two
   maxHardpoints: 1
 --- !u!60 &-2334013680017722951
 PolygonCollider2D:
@@ -194,7 +190,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1481393552804321905}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 073797afb82c5a1438f328866b10b3f0, type: 3}
   m_Name: 
@@ -426,6 +422,10 @@ PrefabInstance:
       value: 90
       objectReference: {fileID: 0}
     - target: {fileID: 2342559008713369502, guid: 7ee055fd3eb1ef543939b271a0637200, type: 3}
+      propertyPath: uniqueName
+      value: Left Support
+      objectReference: {fileID: 0}
+    - target: {fileID: 2342559008713369502, guid: 7ee055fd3eb1ef543939b271a0637200, type: 3}
       propertyPath: description
       value: A small interior station for a system.
       objectReference: {fileID: 0}
@@ -482,9 +482,17 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 3459381446658343361}
     m_Modifications:
+    - target: {fileID: 2523211161005594770, guid: 81c866198aecc4c45ad8270dc37a49e7, type: 3}
+      propertyPath: m_SortingOrder
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2617723914709662954, guid: 81c866198aecc4c45ad8270dc37a49e7, type: 3}
       propertyPath: m_Name
       value: X-M-F
+      objectReference: {fileID: 0}
+    - target: {fileID: 2617723914709662955, guid: 81c866198aecc4c45ad8270dc37a49e7, type: 3}
+      propertyPath: uniqueName
+      value: Main Gun
       objectReference: {fileID: 0}
     - target: {fileID: 2617723914709662955, guid: 81c866198aecc4c45ad8270dc37a49e7, type: 3}
       propertyPath: description
@@ -562,6 +570,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8612400409576146725, guid: 81c866198aecc4c45ad8270dc37a49e7, type: 3}
+      propertyPath: m_SortingOrder
+      value: 2
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 81c866198aecc4c45ad8270dc37a49e7, type: 3}
 --- !u!4 &1254962701279962336 stripped
@@ -632,6 +644,10 @@ PrefabInstance:
       value: -90
       objectReference: {fileID: 0}
     - target: {fileID: 2342559008713369502, guid: 7ee055fd3eb1ef543939b271a0637200, type: 3}
+      propertyPath: uniqueName
+      value: Right Support
+      objectReference: {fileID: 0}
+    - target: {fileID: 2342559008713369502, guid: 7ee055fd3eb1ef543939b271a0637200, type: 3}
       propertyPath: description
       value: A small interior station for a system.
       objectReference: {fileID: 0}
@@ -691,6 +707,10 @@ PrefabInstance:
     - target: {fileID: 1389169848939235639, guid: 1c9a3e4b9669fe24ebb0734e3fd37088, type: 3}
       propertyPath: m_Name
       value: Headlight
+      objectReference: {fileID: 0}
+    - target: {fileID: 1389169848939235639, guid: 1c9a3e4b9669fe24ebb0734e3fd37088, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1389169848939235641, guid: 1c9a3e4b9669fe24ebb0734e3fd37088, type: 3}
       propertyPath: m_RootOrder

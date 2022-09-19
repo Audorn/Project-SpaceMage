@@ -91,7 +91,7 @@ namespace SpaceMage.UI {
         private void populateHardpoints()
         {
             var hardpoints = playerShip.Hardpoints;
-            var hardpointNames = playerShip.HardpointNames;
+            //var hardpointNames = playerShip.HardpointNames;
 
             int numberOfHardpoints = hardpoints.Count;
             for (int i = 0; i < numberOfHardpoints; i++)
@@ -99,7 +99,7 @@ namespace SpaceMage.UI {
                 // Hardpoint.
                 var hardpointContainer = new GroupBox();
                 this.hardpoints.Add(hardpoints[i]);
-                createHardpointUI(hardpoints[i], hardpointNames[i], hardpointContainer);
+                createHardpointUI(hardpoints[i], hardpoints[i].UniqueName, hardpointContainer);
 
                 // Modules.
                 var modulesContainer = new GroupBox();
@@ -215,10 +215,10 @@ namespace SpaceMage.UI {
             string hardpointName = hardpointImage.name;
 
             Hardpoint hardpoint = null;
-            int numberOfHardpoints = playerShip.HardpointNames.Count;
+            int numberOfHardpoints = playerShip.Hardpoints.Count;
             for (int i = 0; i < numberOfHardpoints; i++)
             {
-                if (playerShip.HardpointNames[i] == hardpointName)
+                if (playerShip.Hardpoints[i].UniqueName == hardpointName)
                 {
                     hardpoint = playerShip.Hardpoints[i];
                     break;

@@ -164,4 +164,11 @@ namespace SpaceMage
         REINFORCED,
         ARMORED
     }
+
+    public enum GearType
+    {
+        EQUIPMENT,
+        WEAPON,
+        SPELLGEAR
+    }
 }
