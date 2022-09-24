@@ -25,6 +25,7 @@ namespace SpaceMage.Ships
         [SerializeField] private Gear gear;
         [SerializeField] private bool equipmentOnly = false;
         [SerializeField] private bool spellGearOnly = false;
+        [SerializeField] private Ammo ammo;
 
         [SerializeField] private List<Module> modules = new List<Module>();
         [SerializeField] private List<Spell> spells = new List<Spell>();
@@ -57,6 +58,7 @@ namespace SpaceMage.Ships
         public Gear Gear => gear;
         public bool EquipmentOnly => equipmentOnly;
         public bool SpellGearOnly => spellGearOnly;
+        public Ammo Ammo => ammo;
         public List<Module> Modules => modules;
         public List<Spell> Spells => spells;
         public int NumberOfModules => modules.Count;
@@ -76,36 +78,40 @@ namespace SpaceMage.Ships
         public float EnchantmentStrength => enchantmentStrength;
         public float AmmoCountModifier => ammoCountModifier;
 
-        public int MaxAmmo => (int)(gear.NumberOfRounds * ammoCountModifier);
+        public int MaxAmmo => (int)(gear.BaseMaxRounds * ammoCountModifier);
         public bool IsOutOfAmmo => currentAmmo <= 0;
         public void RefillAmmo() => currentAmmo = ((gear) ? MaxAmmo : 0);
 
 
         private bool canActivate(Transform target)
         {
+            // Ammo required and no ammo.
             if (IsOutOfAmmo)
                 return false;
 
+            // Out of range.
             float distance = Vector2.Distance(transform.position, target.position);
-            if (gear.OnlyFireWithinRange && distance > gear.Ammo.Range)
+            if (gear.BaseOnlyFireWithinRange /*&& distance > gear.Ammo.Range */)
                 return false;
 
-            // TODO: Only fire within turret radius.
+            // Out of turret radius.
+
+            // 
 
             return true;
         }
-        public void ActivateGear(Transform target)
+        public void Activate(Transform target)
         {
             if (!canActivate(target))
                 return;
 
-            gear.Activate(target);
+            gear.Activate(target, modules, spells, ammo);
             currentAmmo--;
         }
 
         public bool InstallGear(Gear gear)
         {
-            if (!gear.canMountTo(this))
+            if (!gear.CanMountTo(this))
                 return false;
 
             // TODO: Uninstall existing gear if necessary.
@@ -121,7 +127,29 @@ namespace SpaceMage.Ships
             if (gear is EmptyGear)
                 return;
 
+            // TODO: Uninstall Ammo.
             // TODO: Swap gear reference with inventory location gear reference.
+        }
+
+        public bool InstallAmmo(Ammo ammo)
+        {
+            // No gear installed.
+            if (gear is EmptyGear)
+                return false;
+
+            // Invalid ammo for gear.
+            if (!gear.IsAmmoValid(ammo))
+                return false;
+
+            return true;
+        }
+        public void RemoveAmmo(int index, bool destroyAmmo = false)
+        {
+            // No ammo.
+            if (!ammo)
+                return;
+
+            // TODO: Swap ammo reference with inventory location ammo reference.
         }
 
         public bool InstallModule(Module module)
